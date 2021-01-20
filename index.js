@@ -3,6 +3,7 @@ import { Time } from 'tone';
 
 /* The rig class holds an array of instruments. The play method loops 
 through that array and calls the go() method on each instrument*/
+
 class Rig {
     constructor(instruments){
         this.instruments = instruments
@@ -17,10 +18,10 @@ class Rig {
 }
 
 /* 
-The instrument class contains a layers object where each key corresponds to
+The instrument class contains an object called layers where each key corresponds to
 a different note or sound. Each key holds an 8-item array of 1's and zeros. The 
-step propert is an integer. The go function loops through the layers object and
-for each key, it checks if the item at index this.step is a one or a zero. If its
+step property is an integer. The go function loops through the layers object and
+for each key, it checks if the item at index [this.step] is a one or a zero. If its
 a 1, it plays a note, if not, it doesn't. 
 */
 
@@ -58,7 +59,7 @@ class Instrument {
         for(const layer in this.layers){
             if(this.layers[layer][this.step]){
                 let time = Tone.now()
-                this.synth.triggerAttackRelease(layer, '8n', time);
+                this.synth.triggerAttackRelease(layer, '8n.', time);
             } 
         }
 
@@ -66,17 +67,18 @@ class Instrument {
     }
 }
 
-const inst = new Instrument()
+const inst  = new Instrument()
 const inst1 = new Instrument()
 const inst2 = new Instrument()
 
-const rig = new Rig([inst, inst1, inst2])
+const rig = new Rig([inst])
 
 // Starts the rig on keypress. maybe this logic should be 
 // inside the Rig class.
+
 document.addEventListener('keypress', ()=>{
     console.log('fdsga')
-    Tone.Transport.bpm.value = 120
+    Tone.Transport.bpm.value = 90
     Tone.Transport.scheduleRepeat(function(time){
         rig.play()
     }, "4n", 0);
@@ -84,3 +86,4 @@ document.addEventListener('keypress', ()=>{
     Tone.start()
     Tone.Transport.start()
 })
+ 

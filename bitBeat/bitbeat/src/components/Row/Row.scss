@@ -1,0 +1,30 @@
+.row {
+    display: flex;
+    margin: 0 auto;
+    width: auto;
+}
+
+.beat {
+    border-radius: 50px;
+    margin: 5px;
+    width: 20px;
+    height: 20px;
+    transition: all 0.1s ease-in-out;
+    // background-color: #101010;
+    box-shadow: inset 0px 0px 7px 0px rgba(100, 100, 255, 0.5);
+
+    &:hover {
+        background-color: #D3FFF3;
+        transition: all 0.2s ease-in-out; 
+        box-shadow: 3px 0px 7px 0px rgba(211,255,243,1);
+        z-index: 10;
+    }
+}
+
+
+.beat--active {
+    background-color: rgba(100, 100, 255, 0.5);
+    /* transition: all 0.8s ease-in-out; */
+    box-shadow: 3px 0px 7px 0px rgba(100, 100, 255, 0.5);
+    z-index: 10;
+}
