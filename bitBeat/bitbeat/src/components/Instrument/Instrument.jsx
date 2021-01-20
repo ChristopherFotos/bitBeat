@@ -43,15 +43,15 @@ export default class Instrument extends Component {
     */
 
     go(){
-        console.log(this.state.step);
+        console.log(this.props.step);
         for(const layer in this.state.layers){
-            if(this.state.layers[layer][this.state.step]){
+            if(this.state.layers[layer][this.props.step]){
                 let time = Tone.now()
-                this.state.synth.triggerAttackRelease(layer, '16n', time);
+                this.state.synth.triggerAttackRelease(layer, '8n', time);
             } 
         }
 
-        this.state.step === this.state.length - 1 ? this.state.step = 0 : this.state.step ++
+        // this.state.step === this.state.length - 1 ? this.state.step = 0 : this.state.step ++
     }
 
     renderRows(){

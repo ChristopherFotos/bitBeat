@@ -8,10 +8,12 @@ import './Transport.scss'
 export default class Trans extends Component {
     constructor(props){
         super(props)
-        this.bpm   = 120
         this.state = {
+            length: 8,
+            bpm: 120,
+            step: 0,
             instruments: [
-
+                
                 // these refs are passed to the instrument components in 
                 // the render method. This allows us to call methods of 
                 // those components. We will use this to call the instrument's 
@@ -33,17 +35,27 @@ export default class Trans extends Component {
 
     start = (t) => {
         const now = Tone.now()
-        Tone.Transport.bpm.value = t.bpm
+        Tone.Transport.bpm.value = t.state.bpm
         Tone.Transport.scheduleRepeat(function(time){
             t.state.instruments.forEach(i => {
                 i.current.go()
             })
+            t.incrementStep()
         }, "4n", now);
         
         Tone.start()
         Tone.Transport.start()
     }
 
+    incrementStep = () => {
+        this.setState(
+            {
+                ...this.state,
+                step: this.state.step === this.state.length - 1 ? this.state.step = 0 : this.state.step + 1
+            }
+        )
+        console.log(this.state.step);
+    }
 
     // maybe there should be a single 'step' variable here in the transport which is passed down 
     // to the instruments. it only creates room for problems when we have them each managing their
@@ -57,7 +69,7 @@ export default class Trans extends Component {
                 </button>
                 <div className='transport'>
 
-                    {this.state.instruments.map(i => <Instrument ref={i}></Instrument>)}
+                    {this.state.instruments.map(i => <Instrument step={this.state.step} ref={i}></Instrument>)}
                 </div>
             </>
         )
