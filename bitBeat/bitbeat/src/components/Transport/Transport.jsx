@@ -4,6 +4,7 @@ import * as Tone from 'tone'
 import './Transport.scss'
 
 /* Analogous to the Rig class in index.js. */
+export const GlobalStep = React.createContext()
 
 export default class Trans extends Component {
     constructor(props){
@@ -11,7 +12,7 @@ export default class Trans extends Component {
         this.state = {
             length: 8,
             bpm: 120,
-            step: 0,
+            step: null,
             instruments: [
                 
                 // these refs are passed to the instrument components in 
@@ -34,13 +35,18 @@ export default class Trans extends Component {
     // and the transport. it takes an argument t which should be 'this'.
 
     start = (t) => {
+        this.setState({
+            ...this.state,
+            step: 0
+        })
         const now = Tone.now()
         Tone.Transport.bpm.value = t.state.bpm
         Tone.Transport.scheduleRepeat(function(time){
+            t.incrementStep()
             t.state.instruments.forEach(i => {
                 i.current.go()
             })
-            t.incrementStep()
+            
         }, "4n", now);
         
         Tone.start()
@@ -68,8 +74,9 @@ export default class Trans extends Component {
                 START
                 </button>
                 <div className='transport'>
-
-                    {this.state.instruments.map(i => <Instrument step={this.state.step} ref={i}></Instrument>)}
+                    <GlobalStep.Provider value = {{step: this.state.step}}>
+                        {this.state.instruments.map(i => <Instrument step={this.state.step} ref={i}></Instrument>)}
+                    </GlobalStep.Provider>
                 </div>
             </>
         )

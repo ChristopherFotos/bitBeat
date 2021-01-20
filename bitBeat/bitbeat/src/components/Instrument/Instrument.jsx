@@ -10,15 +10,15 @@ analagous to the Instrument class in index.js.
 
 */
 
+
+
 export default class Instrument extends Component {
     constructor(props){
         super(props)
-
-
+    
         this.state ={
             synth: new Tone.PolySynth(Tone.MonoSynth).toDestination(),
             length: 8,
-            step: 0,
             layers : {    
                 'C3': [0,0,0,0,0,0,0,0],
                 'D3': [0,0,0,0,0,0,0,0],
@@ -34,6 +34,8 @@ export default class Instrument extends Component {
                 'G4': [0,0,0,0,0,0,0,0],
             }
         }
+
+        
     }
 
     /*
@@ -66,11 +68,7 @@ export default class Instrument extends Component {
 
     placeBeat = (key, index) => {
         let newLayer = [...this.state.layers[key]]
-        console.log(newLayer[index]);
-
         newLayer[index] === 0 ? newLayer[index] = 1 : newLayer[index] = 0
-        
-
         this.setState({
             layers: {
                 ...this.state.layers,
@@ -83,12 +81,12 @@ export default class Instrument extends Component {
 
     render() {
         this.renderRows()
-        return (
+        return (  
             <div className = 'instrument'>              
                 {
                     // creating a Row component for each member of the array and passing it a layer
                     this.renderRows().map(l => <Row placeBeat = {this.placeBeat} tone = {l[0]} layer = {l.filter(i => typeof i !== 'string')} />)
-                }                   
+                }     
             </div>
         )
     }
