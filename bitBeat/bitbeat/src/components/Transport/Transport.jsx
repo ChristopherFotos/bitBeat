@@ -37,7 +37,7 @@ export default class Trans extends Component {
     start = (t) => {
         this.setState({
             ...this.state,
-            step: 0
+            step: -1
         })
         const now = Tone.now()
         Tone.Transport.bpm.value = t.state.bpm
