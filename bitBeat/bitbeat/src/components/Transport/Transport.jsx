@@ -12,35 +12,17 @@ export default class Trans extends Component {
     constructor(props){
         super(props)
         this.state = {
-            length: 8,
+            length: 16,
             bpm: 120,
             step: null,
-            instruments: [
-                
+            instruments: [       
                 // these refs are passed to the instrument components in 
                 // the render method. This allows us to call methods of 
                 // those components. We will use this to call the instrument's 
                 // go() method, which is responsible for stepping through the 
                 // instrument's layer arrays. Later we can make these into objects
                 // that hold the ref, as well as other info to be passed to the instrument
-                // such as tone, length, etc. 
-                {
-                    ref: React.createRef(),
-                    layers: { 
-                        'C3': [0,0,0,0,0,0,0,0],
-                        'D3': [0,0,0,0,0,0,0,0],
-                        'E3': [0,0,0,0,0,0,0,0],
-                        'F3': [0,0,0,0,0,0,0,0],
-                        'G3': [0,0,0,0,0,0,0,0],
-                        'A3': [0,0,0,0,0,0,0,0],
-                        'B3': [0,0,0,0,0,0,0,0],
-                        'C4': [0,0,0,0,0,0,0,0],
-                        'D4': [0,0,0,0,0,0,0,0],
-                        'E4': [0,0,0,0,0,0,0,0],
-                        'F4': [0,0,0,0,0,0,0,0],
-                        'G4': [0,0,0,0,0,0,0,0],
-                    }
-                }   
+                // such as tone, length, etc.  
             ]
         }
     }
@@ -63,7 +45,7 @@ export default class Trans extends Component {
                 i.ref.current.go()
             })
             
-        }, "4n", now);
+        }, "4n");
         
         Tone.start()
         Tone.Transport.start()

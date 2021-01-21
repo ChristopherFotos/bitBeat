@@ -51525,13 +51525,17 @@ var rig = new Rig([inst]); // Starts the rig on keypress. maybe this logic shoul
 // inside the Rig class.
 
 document.addEventListener('keypress', function () {
-  console.log('fdsga');
-  Tone.Transport.bpm.value = 90;
-  Tone.Transport.scheduleRepeat(function (time) {
-    rig.play();
-  }, "4n", 0);
   Tone.start();
-  Tone.Transport.start();
+  var sampler = new Tone.Sampler({
+    urls: {
+      A1: "A1.mp3",
+      A2: "A2.mp3"
+    },
+    baseUrl: "https://tonejs.github.io/audio/casio/",
+    onload: function onload() {
+      sampler.triggerAttackRelease(["D1", "F#1", "A1", "C#1"], 0.5);
+    }
+  }).toDestination();
 });
 },{"tone":"node_modules/tone/build/esm/index.js"}],"../../../../AppData/Roaming/npm/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -51561,7 +51565,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62750" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57162" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

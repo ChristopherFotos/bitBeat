@@ -18,21 +18,8 @@ export default class Instrument extends Component {
     
         this.state ={
             synth: new Tone.PolySynth(Tone.MonoSynth).toDestination(),
-            length: 8,
-            layers : {    
-                // 'C3': [0,0,0,0,0,0,0,0],
-                // 'D3': [0,0,0,0,0,0,0,0],
-                // 'E3': [0,0,0,0,0,0,0,0],
-                // 'F3': [0,0,0,0,0,0,0,0],
-                // 'G3': [0,0,0,0,0,0,0,0],
-                // 'A3': [0,0,0,0,0,0,0,0],
-                // 'B3': [0,0,0,0,0,0,0,0],
-                // 'C4': [0,0,0,0,0,0,0,0],
-                // 'D4': [0,0,0,0,0,0,0,0],
-                // 'E4': [0,0,0,0,0,0,0,0],
-                // 'F4': [0,0,0,0,0,0,0,0],
-                // 'G4': [0,0,0,0,0,0,0,0],
-            }
+            length: this.props.length,
+            layers : {}
         }
 
  
@@ -57,7 +44,7 @@ export default class Instrument extends Component {
         for(const layer in this.state.layers){
             if(this.state.layers[layer][this.props.step]){
                 let time = Tone.now()
-                this.state.synth.triggerAttackRelease(layer, '8n', time);
+                this.state.synth.triggerAttackRelease(layer, '8n.', time);
             } 
         }
 
@@ -91,7 +78,9 @@ export default class Instrument extends Component {
             <div className = 'instrument'>              
                 {
                     // creating a Row component for each member of the array and passing it a layer
-                    this.renderRows().map(l => <Row placeBeat = {this.placeBeat} tone = {l[0]} layer = {l.filter(i => typeof i !== 'string')} />)
+                    this.renderRows()
+                    .reverse()
+                    .map(l => <Row placeBeat = {this.placeBeat} tone = {l[0]} layer = {l.filter(i => typeof i !== 'string')} />)
                 }     
             </div>
         )

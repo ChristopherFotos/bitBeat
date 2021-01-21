@@ -16,6 +16,7 @@ const notes = {
         let currentNote = this.notes.indexOf(key)
 
         this.scales[scale].forEach(i => {
+            currentNote >= 11 && octave ++ 
             currentNote >= this.notes.length - 1 ? currentNote = 0 + i: currentNote += i
             _scale.push(this.notes[currentNote] + octave)
         })
