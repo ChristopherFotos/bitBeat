@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import Instrument from '../Instrument/Instrument'
+import InstrumentSelect from '../InstrumentSelect/InstrumentSelect'
+import makeInstrumentLayers from '../../functions/instrument' 
 import * as Tone from 'tone'
 import './Transport.scss'
 
@@ -22,11 +24,25 @@ export default class Trans extends Component {
                 // instrument's layer arrays. Later we can make these into objects
                 // that hold the ref, as well as other info to be passed to the instrument
                 // such as tone, length, etc. 
-
-                
+                {
+                    ref: React.createRef(),
+                    layers: { 
+                        'C3': [0,0,0,0,0,0,0,0],
+                        'D3': [0,0,0,0,0,0,0,0],
+                        'E3': [0,0,0,0,0,0,0,0],
+                        'F3': [0,0,0,0,0,0,0,0],
+                        'G3': [0,0,0,0,0,0,0,0],
+                        'A3': [0,0,0,0,0,0,0,0],
+                        'B3': [0,0,0,0,0,0,0,0],
+                        'C4': [0,0,0,0,0,0,0,0],
+                        'D4': [0,0,0,0,0,0,0,0],
+                        'E4': [0,0,0,0,0,0,0,0],
+                        'F4': [0,0,0,0,0,0,0,0],
+                        'G4': [0,0,0,0,0,0,0,0],
+                    }
+                }   
             ]
         }
-
     }
 
     // The start() method starts a repeating schedule in the Transport. the scheduled callback
@@ -44,7 +60,7 @@ export default class Trans extends Component {
         Tone.Transport.scheduleRepeat(function(time){
             t.incrementStep()
             t.state.instruments.forEach(i => {
-                i.current.go()
+                i.ref.current.go()
             })
             
         }, "4n", now);
@@ -53,8 +69,21 @@ export default class Trans extends Component {
         Tone.Transport.start()
     }
 
-    addInstrument = () => {
-        const newInst = React.createRef()
+    /* this method will take an object containing all info 
+    about the instrument to be added. it will put that info
+    in an object along with a ref, and then put that object 
+    in this.instruments. When this. when instruments is mapped over,
+    the object will be passed to each instrument component, and then
+    the instrument component will use those props to  construct its
+    layers object. or perhaps a layers object can be made in this 
+    function and passed as props...*/
+
+    addInstrument = (keys) => {
+        const newInst = {
+            ref: React.createRef(),
+            layers: makeInstrumentLayers(keys, this.state.length)
+        }
+
         this.setState({
             ...this.state,
             instruments: [
@@ -90,8 +119,9 @@ export default class Trans extends Component {
                 </button>
                 <div className='transport'>
                     <GlobalStep.Provider value = {{step: this.state.step}}>
-                        {this.state.instruments.map(i => <Instrument step={this.state.step} ref={i}></Instrument>)}
+                        {this.state.instruments.map(i => <Instrument step={this.state.step} layers = {i.layers} ref={i.ref}></Instrument>)}
                     </GlobalStep.Provider>
+                    <InstrumentSelect addInst = {(l)=>this.addInstrument(l)}/>
                 </div>
             </>
         )

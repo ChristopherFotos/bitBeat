@@ -20,22 +20,22 @@ export default class Instrument extends Component {
             synth: new Tone.PolySynth(Tone.MonoSynth).toDestination(),
             length: 8,
             layers : {    
-                'C3': [0,0,0,0,0,0,0,0],
-                'D3': [0,0,0,0,0,0,0,0],
-                'E3': [0,0,0,0,0,0,0,0],
-                'F3': [0,0,0,0,0,0,0,0],
-                'G3': [0,0,0,0,0,0,0,0],
-                'A3': [0,0,0,0,0,0,0,0],
-                'B3': [0,0,0,0,0,0,0,0],
-                'C4': [0,0,0,0,0,0,0,0],
-                'D4': [0,0,0,0,0,0,0,0],
-                'E4': [0,0,0,0,0,0,0,0],
-                'F4': [0,0,0,0,0,0,0,0],
-                'G4': [0,0,0,0,0,0,0,0],
+                // 'C3': [0,0,0,0,0,0,0,0],
+                // 'D3': [0,0,0,0,0,0,0,0],
+                // 'E3': [0,0,0,0,0,0,0,0],
+                // 'F3': [0,0,0,0,0,0,0,0],
+                // 'G3': [0,0,0,0,0,0,0,0],
+                // 'A3': [0,0,0,0,0,0,0,0],
+                // 'B3': [0,0,0,0,0,0,0,0],
+                // 'C4': [0,0,0,0,0,0,0,0],
+                // 'D4': [0,0,0,0,0,0,0,0],
+                // 'E4': [0,0,0,0,0,0,0,0],
+                // 'F4': [0,0,0,0,0,0,0,0],
+                // 'G4': [0,0,0,0,0,0,0,0],
             }
         }
 
-        
+ 
     }
 
     /*
@@ -43,6 +43,15 @@ export default class Instrument extends Component {
         responsible for triggering the attack of the synth. It is called on
         a schedule. 
     */
+
+
+
+    componentDidMount(){
+        this.setState({
+            ...this.state,
+            layers: this.props.layers
+        })
+    }
 
     go(){
         for(const layer in this.state.layers){

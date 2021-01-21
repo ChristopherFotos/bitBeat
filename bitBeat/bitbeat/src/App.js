@@ -1,4 +1,4 @@
-import logo from './logo.svg';
+
 import Trans from './components/Transport/Transport'
 import './App.css';
 
