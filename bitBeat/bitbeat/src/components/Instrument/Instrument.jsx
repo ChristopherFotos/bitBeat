@@ -45,7 +45,6 @@ export default class Instrument extends Component {
     */
 
     go(){
-        console.log(this.props.step);
         for(const layer in this.state.layers){
             if(this.state.layers[layer][this.props.step]){
                 let time = Tone.now()
@@ -75,8 +74,6 @@ export default class Instrument extends Component {
                 [key]: newLayer
             }
         })
-        
-        console.log(this.state.layers);
     } 
 
     render() {

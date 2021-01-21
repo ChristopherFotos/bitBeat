@@ -7,8 +7,6 @@ export default function Beat (props) {
     const [active, setActive] = useState()
     const step = useContext(GlobalStep)
 
-    console.log(props.index, step);
-
     const toggle = ()=> {
         active = !active
         console.log(active);

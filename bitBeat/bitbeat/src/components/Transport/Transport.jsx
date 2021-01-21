@@ -23,7 +23,7 @@ export default class Trans extends Component {
                 // that hold the ref, as well as other info to be passed to the instrument
                 // such as tone, length, etc. 
 
-                React.createRef(),
+                
             ]
         }
 
@@ -53,14 +53,25 @@ export default class Trans extends Component {
         Tone.Transport.start()
     }
 
+    addInstrument = () => {
+        const newInst = React.createRef()
+        this.setState({
+            ...this.state,
+            instruments: [
+                ...this.state.instruments,
+                newInst
+            ]
+        })
+    }
+
     incrementStep = () => {
         this.setState(
             {
                 ...this.state,
-                step: this.state.step === this.state.length - 1 ? this.state.step = 0 : this.state.step + 1
+
+                step: this.state.step === this.state.length - 1 ? 0 : this.state.step + 1
             }
         )
-        console.log(this.state.step);
     }
 
     // maybe there should be a single 'step' variable here in the transport which is passed down 
@@ -72,6 +83,10 @@ export default class Trans extends Component {
             <>
                 <button onClick = {() => this.start(this)}>
                 START
+                </button>
+
+                <button onClick = {() => this.addInstrument()}>
+                add 
                 </button>
                 <div className='transport'>
                     <GlobalStep.Provider value = {{step: this.state.step}}>
