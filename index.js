@@ -77,17 +77,13 @@ const rig = new Rig([inst])
 // inside the Rig class.
 
 document.addEventListener('keypress', ()=>{
+    console.log('fdsga')
+    Tone.Transport.bpm.value = 90
+    Tone.Transport.scheduleRepeat(function(time){
+        rig.play()
+    }, "4n", 0);
+    
     Tone.start()
-    const sampler = new Tone.Sampler({
-        urls: {
-            A1: "A1.mp3",
-            A2: "A2.mp3",
-        },
-        baseUrl: "https://tonejs.github.io/audio/casio/",
-        onload: () => {
-            sampler.triggerAttackRelease(["D1", "F#1", "A1", "C#1"], 0.5);
-        }
-    }).toDestination();
-
+    Tone.Transport.start()
 })
  

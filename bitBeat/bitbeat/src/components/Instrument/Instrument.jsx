@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import * as Tone from 'tone'
 import Row from '../Row/Row'
+import C1 from '../../samples/rhodes/US_Rhodes_C1.wav'
 import './Instrument.scss'
 import { Time } from 'tone';
 
@@ -11,18 +12,26 @@ analagous to the Instrument class in index.js.
 */
 
 
-
 export default class Instrument extends Component {
     constructor(props){
         super(props)
     
         this.state ={
-            synth: new Tone.PolySynth(Tone.MonoSynth).toDestination(),
+            // Tone.Player will be used for drums.  
             length: this.props.length,
             layers : {}
         }
+    }
 
- 
+
+    componentDidMount(){
+        this.setState({
+            ...this.state,
+            layers: this.props.layers,
+            sound: makeTone(this.props.inst.type, this.props.inst.tone)
+        })
+
+        // need to add a method that will make a player or a synth
     }
 
     /*
@@ -30,21 +39,11 @@ export default class Instrument extends Component {
         responsible for triggering the attack of the synth. It is called on
         a schedule. 
     */
-
-
-
-    componentDidMount(){
-        this.setState({
-            ...this.state,
-            layers: this.props.layers
-        })
-    }
-
     go(){
         for(const layer in this.state.layers){
             if(this.state.layers[layer][this.props.step]){
                 let time = Tone.now()
-                this.state.synth.triggerAttackRelease(layer, '8n.', time);
+                this.state.sound.triggerAttackRelease([layer], '8n.', time);
             } 
         }
 
@@ -85,4 +84,20 @@ export default class Instrument extends Component {
             </div>
         )
     }
+}
+
+const makeTone = (type, tone) => {
+    const funcs = {
+        sampler: function(){
+            return new Tone.Sampler({
+            urls: tone.urls,
+            baseUrl: tone.baseUrl,
+            onload: () => {
+                console.log('LOADED');
+            }}).toDestination() 
+        }
+    }  
+
+    if(!funcs[type]) return null
+    return funcs[type]()
 }

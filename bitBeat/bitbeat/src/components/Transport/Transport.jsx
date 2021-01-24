@@ -3,7 +3,9 @@ import Instrument from '../Instrument/Instrument'
 import InstrumentSelect from '../InstrumentSelect/InstrumentSelect'
 import makeInstrumentLayers from '../../functions/instrument' 
 import * as Tone from 'tone'
+import options from '../../inst-options.js'
 import './Transport.scss'
+import { Sampler } from 'tone'
 
 /* Analogous to the Rig class in index.js. */
 export const GlobalStep = React.createContext()
@@ -13,17 +15,12 @@ export default class Trans extends Component {
         super(props)
         this.state = {
             length: 16,
-            bpm: 120,
+            bpm: 90,
             step: null,
             instruments: [       
-                // these refs are passed to the instrument components in 
-                // the render method. This allows us to call methods of 
-                // those components. We will use this to call the instrument's 
-                // go() method, which is responsible for stepping through the 
-                // instrument's layer arrays. Later we can make these into objects
-                // that hold the ref, as well as other info to be passed to the instrument
-                // such as tone, length, etc.  
-            ]
+                // an array of instrument objects to be passed to instrument components.
+            ],
+            instOptions: options
         }
     }
 
@@ -37,7 +34,6 @@ export default class Trans extends Component {
             ...this.state,
             step: -1
         })
-        const now = Tone.now()
         Tone.Transport.bpm.value = t.state.bpm
         Tone.Transport.scheduleRepeat(function(time){
             t.incrementStep()
@@ -45,25 +41,22 @@ export default class Trans extends Component {
                 i.ref.current.go()
             })
             
-        }, "4n");
+        }, "8n");
         
         Tone.start()
         Tone.Transport.start()
     }
 
-    /* this method will take an object containing all info 
-    about the instrument to be added. it will put that info
-    in an object along with a ref, and then put that object 
-    in this.instruments. When this. when instruments is mapped over,
-    the object will be passed to each instrument component, and then
-    the instrument component will use those props to  construct its
-    layers object. or perhaps a layers object can be made in this 
-    function and passed as props...*/
-
-    addInstrument = (keys) => {
+    // this mehtod is called in the instrumentItem component's makeInst method
+    // as 'makeIsnt.' it takes an object containing the type of instrument 
+    // (sampler, player or synth), and its tone. Tone is an object containing 
+    // the urls and base url for the instrument samples. 
+    addInstrument = (inst) => {
         const newInst = {
             ref: React.createRef(),
-            layers: makeInstrumentLayers(keys, this.state.length)
+            layers: makeInstrumentLayers(inst.keys, this.state.length),
+            tone: inst.tone,
+            type: inst.type
         }
 
         this.setState({
@@ -100,10 +93,10 @@ export default class Trans extends Component {
                 add 
                 </button>
                 <div className='transport'>
+                    <InstrumentSelect instruments = { this.state.instOptions } addInst = {(l)=>this.addInstrument(l)}/>
                     <GlobalStep.Provider value = {{step: this.state.step}}>
-                        {this.state.instruments.map(i => <Instrument step={this.state.step} layers = {i.layers} ref={i.ref}></Instrument>)}
+                        {this.state.instruments.map(i => <Instrument step={this.state.step} inst = {i} layers = {i.layers} ref={i.ref}></Instrument>)}
                     </GlobalStep.Provider>
-                    <InstrumentSelect addInst = {(l)=>this.addInstrument(l)}/>
                 </div>
             </>
         )

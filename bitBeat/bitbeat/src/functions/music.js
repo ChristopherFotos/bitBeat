@@ -10,13 +10,18 @@ const notes = {
     },
 
     getScale: function(key, scale, octave){
+        const uppercaseKey = key.toUpperCase()
         const _scale = []
-        _scale.push(key + octave)
+        _scale.push(uppercaseKey + octave)
 
-        let currentNote = this.notes.indexOf(key)
+        let currentNote = this.notes.indexOf(uppercaseKey)
+        let crossedOctave = false
 
         this.scales[scale].forEach(i => {
-            currentNote >= 11 && octave ++ 
+            if(currentNote >= 10 && !crossedOctave) {
+                crossedOctave = true
+                octave ++
+            } 
             currentNote >= this.notes.length - 1 ? currentNote = 0 + i: currentNote += i
             _scale.push(this.notes[currentNote] + octave)
         })
@@ -25,6 +30,6 @@ const notes = {
     }
 }
 
-console.log(notes.getScale('D', 'major', 3))
+console.log(notes.getScale('D', 'major', 1))
 
 export default notes
