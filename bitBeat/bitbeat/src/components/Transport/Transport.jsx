@@ -24,10 +24,6 @@ export default class Trans extends Component {
         }
     }
 
-    // The start() method starts a repeating schedule in the Transport. the scheduled callback
-    // loops through the state.instruments array and calls each ref's go() method, which is 
-    // what ultimately triggers the synth to make a sound. This method then starts the Tone 
-    // and the transport. it takes an argument t which should be 'this'.
 
     start = (t) => {
         this.setState({
@@ -72,15 +68,9 @@ export default class Trans extends Component {
         this.setState(
             {
                 ...this.state,
-
                 step: this.state.step === this.state.length - 1 ? 0 : this.state.step + 1
-            }
-        )
+            })
     }
-
-    // maybe there should be a single 'step' variable here in the transport which is passed down 
-    // to the instruments. it only creates room for problems when we have them each managing their
-    // own step, and a transport is supposed to do that job anyway. look up the useRef hook
 
     render() {
         return (
