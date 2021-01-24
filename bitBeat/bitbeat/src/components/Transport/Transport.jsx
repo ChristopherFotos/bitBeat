@@ -26,10 +26,7 @@ export default class Trans extends Component {
 
 
     start = (t,bpm) => {
-        this.setState({
-            ...t.state,
-            step: -1
-        })
+
         Tone.Transport.bpm.value = bpm
         const clear = Tone.Transport.scheduleRepeat(function(time){
             t.incrementStep()
@@ -40,6 +37,7 @@ export default class Trans extends Component {
         }, "8n");
         this.setState({
             ...this.state,
+            step: -1,
             bpm: bpm,
             clear: clear
         })
