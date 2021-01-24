@@ -22,32 +22,31 @@ export default class Trans extends Component {
             instOptions: options.inst,
             kitOptions: options.kit
         }
-        console.log(this.state.instOptions);
     }
 
 
-    start = (t) => {
+    start = (t,bpm) => {
         this.setState({
-            ...this.state,
+            ...t.state,
             step: -1
         })
-        Tone.Transport.bpm.value = t.state.bpm
-        Tone.Transport.scheduleRepeat(function(time){
+        Tone.Transport.bpm.value = bpm
+        const clear = Tone.Transport.scheduleRepeat(function(time){
             t.incrementStep()
             t.state.instruments.forEach(i => {
                 i.ref.current.go()
             })
             
         }, "8n");
-        
+        this.setState({
+            ...this.state,
+            bpm: bpm,
+            clear: clear
+        })
         Tone.start()
         Tone.Transport.start()
     }
 
-    // this mehtod is called in the instrumentItem component's makeInst method
-    // as 'makeIsnt.' it takes an object containing the type of instrument 
-    // (sampler, player or synth), and its tone. Tone is an object containing 
-    // the urls and base url for the instrument samples. 
     addInstrument = (inst) => {
         const newInst = {
             ref: React.createRef(),
@@ -92,24 +91,46 @@ export default class Trans extends Component {
             })
     }
 
+    changeValue = (e) => {
+        
+        this.setState({
+            ...this.state,
+            [e.target.name]: e.target.value
+        })
+        console.log(this.state.bpm);
+        this.stop()
+        this.start(this, e.target.value)
+    }
+
+    stop = () => {
+        Tone.Transport.clear(this.state.clear).stop()
+    }
+
     render() {
         return (
             <>
-                <button onClick = {() => this.start(this)}>
+                <button onClick = {() => this.start(this, this.state.bpm)}>
                 START
                 </button>
 
                 <button onClick = {() => this.addInstrument()}>
                 add 
                 </button>
+                <button onClick={this.stop}>Stop</button>
                 <div className='transport'>
+                    <div className="menu">
                     <InstrumentSelect 
                         instruments = { this.state.instOptions } 
                         drumKits = {this.state.kitOptions}
                         addInst = {(l)=>this.addInstrument(l)} 
                         addKit={(d)=>this.addDrumKit(d)}
                     />
+                    BPM: {this.state.bpm}
+                    <input type="range" name='bpm' min='60' max = '350' onChange={e=>this.changeValue(e)} value={this.state.bpm}/>
+                    </div>
+
                     <GlobalStep.Provider value = {{step: this.state.step}}>
+                        {/* the instrument panel */}
                         {this.state.instruments.map(i => {
                             if(i.role === 'inst') return <Instrument step={this.state.step} inst = {i} layers = {i.layers} ref={i.ref}></Instrument>
                             if(i.role === 'kit') return <DrumKit step={this.state.step} kit = {i.sounds} layers = {i.layers} ref={i.ref}></DrumKit>
