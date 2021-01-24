@@ -62,10 +62,10 @@ const options = {
         {
             name: 'kitOne',
             sounds:[
-                {name: 'kick', url: 'http://localhost:3000/samples/cello/Cello-C1.wav'},
-                {name: 'snare', url: 'http://localhost:3000/samples/cello/Cello-C1.wav'},
-                {name: 'hat', url: 'http://localhost:3000/samples/cello/Cello-C1.wav'},
-                {name: 'crash', url: 'http://localhost:3000/samples/cello/Cello-C1.wav'},
+                {name: 'kick', url: 'http://localhost:3000/samples/percussion/analog/KICK1.wav'},
+                {name: 'snare', url: 'http://localhost:3000/samples/percussion/analog/SNARE1.wav'},
+                {name: 'hat', url: 'http://localhost:3000/samples/percussion/analog/HHCL.wav'},
+                {name: 'hh-open', url: 'http://localhost:3000/samples/percussion/analog/HHOP.wav'},
             ]
         },
     ]
