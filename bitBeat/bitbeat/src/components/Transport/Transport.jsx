@@ -6,6 +6,7 @@ import * as Tone from 'tone'
 import options from '../../inst-options.js'
 import './Transport.scss'
 import { Sampler } from 'tone'
+import DrumKit from '../DrumKit/DrumKit'
 
 /* Analogous to the Rig class in index.js. */
 export const GlobalStep = React.createContext()
@@ -17,11 +18,11 @@ export default class Trans extends Component {
             length: 16,
             bpm: 90,
             step: null,
-            instruments: [       
-                // an array of instrument objects to be passed to instrument components.
-            ],
-            instOptions: options
+            instruments: [],         
+            instOptions: options.inst,
+            kitOptions: options.kit
         }
+        console.log(this.state.instOptions);
     }
 
 
@@ -52,7 +53,9 @@ export default class Trans extends Component {
             ref: React.createRef(),
             layers: makeInstrumentLayers(inst.keys, this.state.length),
             tone: inst.tone,
-            type: inst.type
+            sounds: inst.sounds,
+            type: inst.type,
+            role: 'inst'
         }
 
         this.setState({
@@ -60,6 +63,23 @@ export default class Trans extends Component {
             instruments: [
                 ...this.state.instruments,
                 newInst
+            ]
+        })
+    }
+
+    addDrumKit(kit){
+        const newKit = {
+            ref: React.createRef(),
+            layers: makeInstrumentLayers(kit.keys, this.state.length),
+            sounds: kit.sounds,
+            role: 'kit'
+        }
+
+        this.setState({
+            ...this.state,
+            instruments: [
+                ...this.state.instruments,
+                newKit
             ]
         })
     }
@@ -83,9 +103,17 @@ export default class Trans extends Component {
                 add 
                 </button>
                 <div className='transport'>
-                    <InstrumentSelect instruments = { this.state.instOptions } addInst = {(l)=>this.addInstrument(l)}/>
+                    <InstrumentSelect 
+                        instruments = { this.state.instOptions } 
+                        drumKits = {this.state.kitOptions}
+                        addInst = {(l)=>this.addInstrument(l)} 
+                        addKit={(d)=>this.addDrumKit(d)}
+                    />
                     <GlobalStep.Provider value = {{step: this.state.step}}>
-                        {this.state.instruments.map(i => <Instrument step={this.state.step} inst = {i} layers = {i.layers} ref={i.ref}></Instrument>)}
+                        {this.state.instruments.map(i => {
+                            if(i.role === 'inst') return <Instrument step={this.state.step} inst = {i} layers = {i.layers} ref={i.ref}></Instrument>
+                            if(i.role === 'kit') return <DrumKit step={this.state.step} kit = {i.sounds} layers = {i.layers} ref={i.ref}></DrumKit>
+                        })}
                     </GlobalStep.Provider>
                 </div>
             </>

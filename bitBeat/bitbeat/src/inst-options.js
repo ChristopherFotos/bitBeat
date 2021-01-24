@@ -1,4 +1,7 @@
-const options = [
+// import {Tone}  from "tone/build/esm/core/Tone"
+
+const options = {
+    inst:[
     {
         name: 'rhodes',
         baseUrl: "http://localhost:3000/samples/rhodes/",
@@ -53,6 +56,19 @@ const options = [
         },
         type: 'sampler'
     },
-]
+    ],
+
+    kit: [
+        {
+            name: 'kitOne',
+            sounds:[
+                {name: 'kick', url: 'http://localhost:3000/samples/cello/Cello-C1.wav'},
+                {name: 'snare', url: 'http://localhost:3000/samples/cello/Cello-C1.wav'},
+                {name: 'hat', url: 'http://localhost:3000/samples/cello/Cello-C1.wav'},
+                {name: 'crash', url: 'http://localhost:3000/samples/cello/Cello-C1.wav'},
+            ]
+        },
+    ]
+}
 
 export default options

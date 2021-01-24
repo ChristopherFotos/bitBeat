@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Player } from 'tone'
 import notes from '../../../functions/music'
 
 export default class InstrumentItem extends Component {
@@ -10,7 +11,7 @@ export default class InstrumentItem extends Component {
         expanded: false
     }
 
-    // tone will be passed down through props
+
 
     expand = () => {
         this.setState({
