@@ -7,7 +7,10 @@ import options from '../../inst-options.js'
 import InstrumentPanel from '../InstrumentPanel/InstrumentPanel'
 import './Transport.scss'
 import { Sampler } from 'tone'
+import {v4 as uuid} from 'uuid'
 import DrumKit from '../DrumKit/DrumKit'
+
+const instKeys = [uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid(),]
 
 /* Analogous to the Rig class in index.js. */
 export const GlobalStep = React.createContext()
@@ -51,7 +54,8 @@ export default class Trans extends Component {
             tone: inst.tone,
             sounds: inst.sounds,
             type: inst.type,
-            role: 'inst'
+            role: 'inst',
+            id: uuid(),
         }
 
         this.setState({
@@ -68,7 +72,8 @@ export default class Trans extends Component {
             ref: React.createRef(),
             layers: makeInstrumentLayers(kit.keys, this.state.length),
             sounds: kit.sounds,
-            role: 'kit'
+            role: 'kit',
+            id: uuid()
         }
 
         this.setState({
@@ -165,8 +170,8 @@ export default class Trans extends Component {
                         
                         {[...this.state.instruments].map((i, j) => {
                             {console.log('inst in render DEEP ', [...this.state.instruments])}
-                            if(i.role === 'inst') return <Instrument step={this.state.step} inst = {i} length ={this.state.length}  index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></Instrument>
-                            if(i.role === 'kit' ) return <DrumKit step={this.state.step} kit = {i.sounds} length ={this.state.length} index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></DrumKit>
+                            if(i.role === 'inst') return <Instrument key={i.id} step={this.state.step} inst = {i} length ={this.state.length}  index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></Instrument>
+                            if(i.role === 'kit' ) return <DrumKit key={i.id} step={this.state.step} kit = {i.sounds} length ={this.state.length} index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></DrumKit>
                         })}
                     </GlobalStep.Provider>
                 </div>
