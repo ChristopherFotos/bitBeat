@@ -1,42 +1,52 @@
 import React, { Component } from 'react'
 import * as Tone from 'tone'
 import Row from '../Row/Row'
+import C1 from '../../samples/rhodes/US_Rhodes_C1.wav'
 import './Instrument.scss'
+import makeInstrumentLayers from '../../functions/instrument'
 import { Time } from 'tone';
-
-/* 
-
-analagous to the Instrument class in index.js. 
-
-*/
-
-
 
 export default class Instrument extends Component {
     constructor(props){
-        super(props)
-    
+        super(props) 
         this.state ={
-            synth: new Tone.PolySynth(Tone.MonoSynth).toDestination(),
             length: this.props.length,
             layers : {}
         }
-
- 
     }
 
-    /*
-        this method is called by the Transport component via a ref. It is
-        responsible for triggering the attack of the synth. It is called on
-        a schedule. 
-    */
+    changeLength(l){
+        
+        // console.log(l);
+        // const prevLength = this.state.length
+
+        // let newLayers = {}
+        
+        // for(const key in this.state.layers){
+        //     newLayers[key] = this.state.layers[key]
 
 
+        //         for(let i = 0; i < this.props.length-prevLength; i++){
+        //             newLayers[key].push(0)
+        //         }
+             
+            
+        // }    
+
+        // console.log('length in props', this.props.length);
+    
+        this.setState({
+            ...this.state,
+            layers: makeInstrumentLayers(Object.keys(this.state.layers), l),
+            length: l
+        })
+    }
 
     componentDidMount(){
         this.setState({
             ...this.state,
-            layers: this.props.layers
+            layers: this.props.layers,
+            sound: makeTone(this.props.inst.type, this.props.inst.tone)
         })
     }
 
@@ -44,11 +54,9 @@ export default class Instrument extends Component {
         for(const layer in this.state.layers){
             if(this.state.layers[layer][this.props.step]){
                 let time = Tone.now()
-                this.state.synth.triggerAttackRelease(layer, '8n.', time);
+                this.state.sound.triggerAttackRelease([layer], '8n.', time) 
             } 
         }
-
-        // this.state.step === this.state.length - 1 ? this.state.step = 0 : this.state.step ++
     }
 
     renderRows(){
@@ -73,16 +81,34 @@ export default class Instrument extends Component {
     } 
 
     render() {
-        this.renderRows()
         return (  
-            <div className = 'instrument'>              
-                {
-                    // creating a Row component for each member of the array and passing it a layer
-                    this.renderRows()
-                    .reverse()
-                    .map(l => <Row placeBeat = {this.placeBeat} tone = {l[0]} layer = {l.filter(i => typeof i !== 'string')} />)
-                }     
-            </div>
+            <>
+                <button onClick={()=>this.props.remove(this.props.index)}>remove</button>
+                <div className = 'instrument'>              
+                    {
+                        // creating a Row component for each member of the array and passing it a layer
+                        this.renderRows()
+                        .reverse()
+                        .map(l => <Row placeBeat = {this.placeBeat} tone = {l[0]} layer = {l.filter(i => typeof i !== 'string')} />)
+                    }     
+                </div>
+            </>
         )
     }
+}
+
+const makeTone = (type, tone) => {
+    const funcs = {
+        sampler: function(){
+            return new Tone.Sampler({
+            urls: tone.urls,
+            baseUrl: tone.baseUrl,
+            onload: () => {
+                console.log('LOADED');
+            }}).toDestination() 
+        },
+    }  
+
+    if(!funcs[type]) return null
+    return funcs[type]()
 }

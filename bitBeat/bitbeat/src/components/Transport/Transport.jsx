@@ -3,7 +3,10 @@ import Instrument from '../Instrument/Instrument'
 import InstrumentSelect from '../InstrumentSelect/InstrumentSelect'
 import makeInstrumentLayers from '../../functions/instrument' 
 import * as Tone from 'tone'
+import options from '../../inst-options.js'
 import './Transport.scss'
+import { Sampler } from 'tone'
+import DrumKit from '../DrumKit/DrumKit'
 
 /* Analogous to the Rig class in index.js. */
 export const GlobalStep = React.createContext()
@@ -12,58 +15,42 @@ export default class Trans extends Component {
     constructor(props){
         super(props)
         this.state = {
-            length: 16,
-            bpm: 120,
-            step: null,
-            instruments: [       
-                // these refs are passed to the instrument components in 
-                // the render method. This allows us to call methods of 
-                // those components. We will use this to call the instrument's 
-                // go() method, which is responsible for stepping through the 
-                // instrument's layer arrays. Later we can make these into objects
-                // that hold the ref, as well as other info to be passed to the instrument
-                // such as tone, length, etc.  
-            ]
+            ready: false,
+            length: null,
+            bpm: 90,
+            step: -1,
+            instruments: [],         
+            instOptions: options.inst,
+            kitOptions: options.kit
         }
     }
 
-    // The start() method starts a repeating schedule in the Transport. the scheduled callback
-    // loops through the state.instruments array and calls each ref's go() method, which is 
-    // what ultimately triggers the synth to make a sound. This method then starts the Tone 
-    // and the transport. it takes an argument t which should be 'this'.
-
-    start = (t) => {
-        this.setState({
-            ...this.state,
-            step: -1
-        })
-        const now = Tone.now()
-        Tone.Transport.bpm.value = t.state.bpm
-        Tone.Transport.scheduleRepeat(function(time){
+    start = (t,bpm) => {
+        Tone.Transport.bpm.value = bpm
+        const clear = Tone.Transport.scheduleRepeat(function(time){
             t.incrementStep()
             t.state.instruments.forEach(i => {
                 i.ref.current.go()
             })
             
-        }, "4n");
-        
+        }, "8n");
+        this.setState({
+            ...this.state,
+            bpm: bpm,
+            clear: clear
+        })
         Tone.start()
         Tone.Transport.start()
     }
 
-    /* this method will take an object containing all info 
-    about the instrument to be added. it will put that info
-    in an object along with a ref, and then put that object 
-    in this.instruments. When this. when instruments is mapped over,
-    the object will be passed to each instrument component, and then
-    the instrument component will use those props to  construct its
-    layers object. or perhaps a layers object can be made in this 
-    function and passed as props...*/
-
-    addInstrument = (keys) => {
+    addInstrument = (inst) => {
         const newInst = {
             ref: React.createRef(),
-            layers: makeInstrumentLayers(keys, this.state.length)
+            layers: makeInstrumentLayers(inst.keys, this.state.length),
+            tone: inst.tone,
+            sounds: inst.sounds,
+            type: inst.type,
+            role: 'inst'
         }
 
         this.setState({
@@ -75,37 +62,104 @@ export default class Trans extends Component {
         })
     }
 
+    addDrumKit(kit){
+        const newKit = {
+            ref: React.createRef(),
+            layers: makeInstrumentLayers(kit.keys, this.state.length),
+            sounds: kit.sounds,
+            role: 'kit'
+        }
+
+        this.setState({
+            ...this.state,
+            instruments: [
+                ...this.state.instruments,
+                newKit
+            ]
+        })
+    }
+
+    removeInstrument = (i) => {
+        const newInstArray = [...this.state.instruments]
+        newInstArray.splice(i,1)
+        this.setState({
+            ...this.state,
+            instruments: newInstArray
+        })
+    }
+
     incrementStep = () => {
         this.setState(
             {
                 ...this.state,
-
                 step: this.state.step === this.state.length - 1 ? 0 : this.state.step + 1
-            }
-        )
+            })
     }
 
-    // maybe there should be a single 'step' variable here in the transport which is passed down 
-    // to the instruments. it only creates room for problems when we have them each managing their
-    // own step, and a transport is supposed to do that job anyway. look up the useRef hook
+    changeValue = (e) => {
+        this.setState({
+            ...this.state,
+            [e.target.name]: e.target.value
+        })
+
+        if(e.target.name === 'bpm'){
+            this.stop()
+            this.start(this, e.target.value)
+        }
+    }
+
+    setLength = e => {
+        this.setState({
+            ...this.state,
+            ready: true,
+            length: e.target.value
+        })
+    }
+
+    stop = () => {
+        Tone.Transport.clear(this.state.clear).stop()
+    }
 
     render() {
-        return (
+        if(this.state.ready){
+            return (
             <>
-                <button onClick = {() => this.start(this)}>
+                <button onClick = {() => this.start(this, this.state.bpm)}>
                 START
                 </button>
 
                 <button onClick = {() => this.addInstrument()}>
                 add 
                 </button>
+                <button onClick={this.stop}>Stop</button>
                 <div className='transport'>
+                    <div className="menu">
+                    <InstrumentSelect 
+                        instruments = { this.state.instOptions } 
+                        drumKits = {this.state.kitOptions}
+                        addInst = {(l)=>this.addInstrument(l)} 
+                        addKit={(d)=>this.addDrumKit(d)}
+                    />
+                    BPM: {this.state.bpm}
+                    <input type="range" name='bpm' min='60' max = '350' onChange={e=>this.changeValue(e)} value={this.state.bpm}/>
+                    </div>
+
                     <GlobalStep.Provider value = {{step: this.state.step}}>
-                        {this.state.instruments.map(i => <Instrument step={this.state.step} layers = {i.layers} ref={i.ref}></Instrument>)}
+                        {/* the instrument panel */}
+                        {this.state.instruments.map((i, j) => {
+                            if(i.role === 'inst') return <Instrument step={this.state.step} inst = {i} length ={this.state.length}  index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></Instrument>
+                            if(i.role === 'kit') return <DrumKit step={this.state.step} kit = {i.sounds} length ={this.state.length} index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></DrumKit>
+                        })}
                     </GlobalStep.Provider>
-                    <InstrumentSelect addInst = {(l)=>this.addInstrument(l)}/>
                 </div>
             </>
+        )} else return (
+            <select onChange = {(e) => this.setLength(e)} name="scale" id="cars">
+                <option value="4">4</option>
+                <option value="8">8</option>
+                <option value="16">16</option>
+                <option value="32">32</option>
+            </select>
         )
     }
 }
