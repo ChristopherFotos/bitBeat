@@ -11,6 +11,30 @@ export default class DrumKit extends Component {
         }
     }
 
+    changeLength(l){
+        const prevLength = this.state.length
+
+        this.setState({
+                ...this.state,
+                length: l
+            })
+        
+        let newLayers = {}
+        
+        for(const key in this.state.layers){
+            newLayers[key] = this.state.layers[key]
+
+            for(let i = 0; i < l - prevLength; i++){
+                newLayers[key].push(0)
+            }
+        }    
+    
+        this.setState({
+            ...this.state,
+            layers: newLayers
+        })
+    }
+
     componentDidMount(){
         this.setState({
             ...this.state,
@@ -53,6 +77,8 @@ export default class DrumKit extends Component {
     render() {
         this.renderRows()
         return (  
+            <>
+            <button onClick={()=>this.props.remove(this.props.index)}>remove</button>
             <div className = 'instrument'>              
                 {
                     // creating a Row component for each member of the array and passing it a layer
@@ -61,6 +87,7 @@ export default class DrumKit extends Component {
                     .map(l => <Row placeBeat = {this.placeBeat} tone = {l[0]} layer = {l.filter(i => typeof i !== 'string')} />)
                 }     
             </div>
+            </>
         )
     }
 }

@@ -15,18 +15,17 @@ export default class Trans extends Component {
     constructor(props){
         super(props)
         this.state = {
-            length: 16,
+            ready: false,
+            length: null,
             bpm: 90,
-            step: null,
+            step: -1,
             instruments: [],         
             instOptions: options.inst,
             kitOptions: options.kit
         }
     }
 
-
     start = (t,bpm) => {
-
         Tone.Transport.bpm.value = bpm
         const clear = Tone.Transport.scheduleRepeat(function(time){
             t.incrementStep()
@@ -37,7 +36,6 @@ export default class Trans extends Component {
         }, "8n");
         this.setState({
             ...this.state,
-            step: -1,
             bpm: bpm,
             clear: clear
         })
@@ -81,6 +79,15 @@ export default class Trans extends Component {
         })
     }
 
+    removeInstrument = (i) => {
+        const newInstArray = [...this.state.instruments]
+        newInstArray.splice(i,1)
+        this.setState({
+            ...this.state,
+            instruments: newInstArray
+        })
+    }
+
     incrementStep = () => {
         this.setState(
             {
@@ -90,14 +97,23 @@ export default class Trans extends Component {
     }
 
     changeValue = (e) => {
-        
         this.setState({
             ...this.state,
             [e.target.name]: e.target.value
         })
-        console.log(this.state.bpm);
-        this.stop()
-        this.start(this, e.target.value)
+
+        if(e.target.name === 'bpm'){
+            this.stop()
+            this.start(this, e.target.value)
+        }
+    }
+
+    setLength = e => {
+        this.setState({
+            ...this.state,
+            ready: true,
+            length: e.target.value
+        })
     }
 
     stop = () => {
@@ -105,7 +121,8 @@ export default class Trans extends Component {
     }
 
     render() {
-        return (
+        if(this.state.ready){
+            return (
             <>
                 <button onClick = {() => this.start(this, this.state.bpm)}>
                 START
@@ -129,13 +146,20 @@ export default class Trans extends Component {
 
                     <GlobalStep.Provider value = {{step: this.state.step}}>
                         {/* the instrument panel */}
-                        {this.state.instruments.map(i => {
-                            if(i.role === 'inst') return <Instrument step={this.state.step} inst = {i} layers = {i.layers} ref={i.ref}></Instrument>
-                            if(i.role === 'kit') return <DrumKit step={this.state.step} kit = {i.sounds} layers = {i.layers} ref={i.ref}></DrumKit>
+                        {this.state.instruments.map((i, j) => {
+                            if(i.role === 'inst') return <Instrument step={this.state.step} inst = {i} length ={this.state.length}  index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></Instrument>
+                            if(i.role === 'kit') return <DrumKit step={this.state.step} kit = {i.sounds} length ={this.state.length} index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></DrumKit>
                         })}
                     </GlobalStep.Provider>
                 </div>
             </>
+        )} else return (
+            <select onChange = {(e) => this.setLength(e)} name="scale" id="cars">
+                <option value="4">4</option>
+                <option value="8">8</option>
+                <option value="16">16</option>
+                <option value="32">32</option>
+            </select>
         )
     }
 }
