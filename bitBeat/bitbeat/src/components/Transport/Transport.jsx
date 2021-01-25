@@ -4,6 +4,7 @@ import InstrumentSelect from '../InstrumentSelect/InstrumentSelect'
 import makeInstrumentLayers from '../../functions/instrument' 
 import * as Tone from 'tone'
 import options from '../../inst-options.js'
+import InstrumentPanel from '../InstrumentPanel/InstrumentPanel'
 import './Transport.scss'
 import { Sampler } from 'tone'
 import DrumKit from '../DrumKit/DrumKit'
@@ -80,11 +81,16 @@ export default class Trans extends Component {
     }
 
     removeInstrument = (i) => {
+        console.log('i: ', i);
         const newInstArray = [...this.state.instruments]
+        console.log('new inst arry ', [...newInstArray]);
+
         newInstArray.splice(i,1)
+
+        console.log('new inst arry after splice: ', [...newInstArray]);
         this.setState({
             ...this.state,
-            instruments: newInstArray
+            instruments: this.state.instruments.filter((inst,j)=>j !== i)
         })
     }
 
@@ -122,16 +128,14 @@ export default class Trans extends Component {
 
     render() {
         if(this.state.ready){
+            console.log('inst in render ', [...this.state.instruments]);
             return (
-            <>
-                <button onClick = {() => this.start(this, this.state.bpm)}>
+            <div className = 'setup'>
+                <button className = 'setup__button' onClick = {() => this.start(this, this.state.bpm)}>
                 START
                 </button>
+                <button className = 'setup__button'  onClick={this.stop}>Stop</button>
 
-                <button onClick = {() => this.addInstrument()}>
-                add 
-                </button>
-                <button onClick={this.stop}>Stop</button>
                 <div className='transport'>
                     <div className="menu">
                     <InstrumentSelect 
@@ -141,18 +145,32 @@ export default class Trans extends Component {
                         addKit={(d)=>this.addDrumKit(d)}
                     />
                     BPM: {this.state.bpm}
-                    <input type="range" name='bpm' min='60' max = '350' onChange={e=>this.changeValue(e)} value={this.state.bpm}/>
+                    <input 
+                        className = 'transport__range'
+                        type="range" 
+                        name='bpm' min='60' 
+                        max = '350'     
+                        onChange={e=>this.changeValue(e)} 
+                        value={this.state.bpm}/>
                     </div>
 
                     <GlobalStep.Provider value = {{step: this.state.step}}>
                         {/* the instrument panel */}
-                        {this.state.instruments.map((i, j) => {
+                        {/* <InstrumentPanel 
+                            instruments = {this.state.instruments}
+                            step = {this.state.step}
+                            length = {this.state.length}
+                            removeInstrument = {this.removeInstrument}
+                        /> */}
+                        
+                        {[...this.state.instruments].map((i, j) => {
+                            {console.log('inst in render DEEP ', [...this.state.instruments])}
                             if(i.role === 'inst') return <Instrument step={this.state.step} inst = {i} length ={this.state.length}  index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></Instrument>
-                            if(i.role === 'kit') return <DrumKit step={this.state.step} kit = {i.sounds} length ={this.state.length} index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></DrumKit>
+                            if(i.role === 'kit' ) return <DrumKit step={this.state.step} kit = {i.sounds} length ={this.state.length} index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></DrumKit>
                         })}
                     </GlobalStep.Provider>
                 </div>
-            </>
+            </div>
         )} else return (
             <select onChange = {(e) => this.setLength(e)} name="scale" id="cars">
                 <option value="4">4</option>

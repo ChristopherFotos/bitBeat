@@ -62,8 +62,8 @@ export default class Instrument extends Component {
     renderRows(){
         // pushing every array in this.layers into an array 
         let layers = []
-        for (const key in this.state.layers){  
-            layers.push([key, ...this.state.layers[key]])
+        for (const key in this.props.layers){  
+            layers.push([key, ...this.props.layers[key]])
         }
         // returning the array
         return layers
