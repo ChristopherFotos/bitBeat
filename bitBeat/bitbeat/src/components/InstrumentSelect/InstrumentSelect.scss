@@ -1,4 +1,10 @@
-.inst {
-    display: flex;
-    flex-direction: column;
+
+.instrument-select {
+    width: 200px;
+    height: 100vh;
+    border-right: 1px solid #ccc;
+    overflow-y: scroll;
+    font-family: 'Microsoft Yi Baiti';
+    text-align: right;
+    padding: 20px;
 }

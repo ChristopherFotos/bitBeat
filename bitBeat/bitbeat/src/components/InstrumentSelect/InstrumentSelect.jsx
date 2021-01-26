@@ -7,7 +7,7 @@ import DrumKitItem from '../DrumKitItem/DrumKitItem'
 
 export default function InstrumentSelect(props) {
     return (
-        <div>
+        <div className='instrument-select'>
             {props.instruments.map(i => <InstrumentItem inst={i} addInst = {props.addInst}/>)}
             {props.drumKits.map(k => <DrumKitItem kit={k} addKit = {props.addKit} />)}
         </div>

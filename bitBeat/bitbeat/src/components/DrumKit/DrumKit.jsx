@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import Row from '../../components/Row/Row'
+import remove from '../../assets/icons/x.svg'
+import './DrumKit.scss'
 import * as Tone from 'tone'
 
 export default class DrumKit extends Component {
@@ -78,8 +80,9 @@ export default class DrumKit extends Component {
         this.renderRows()
         return (  
             <>
-            <button onClick={()=>this.props.remove(this.props.index)}>remove</button>
-            <div className = 'instrument'>              
+            
+            <div className = 'instrument'>   
+            <img src={remove} className = 'instrument__remove-btn' onClick={()=>this.props.remove(this.props.index)} />           
                 {
                     // creating a Row component for each member of the array and passing it a layer
                     this.renderRows()

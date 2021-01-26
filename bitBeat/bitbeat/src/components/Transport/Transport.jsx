@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import Instrument from '../Instrument/Instrument'
 import InstrumentSelect from '../InstrumentSelect/InstrumentSelect'
 import makeInstrumentLayers from '../../functions/instrument' 
+import play from '../../assets/icons/play-btn.svg'
+import pause from '../../assets/icons/pause-btn.svg'
 import * as Tone from 'tone'
 import options from '../../inst-options.js'
 import InstrumentPanel from '../InstrumentPanel/InstrumentPanel'
@@ -10,7 +12,7 @@ import { Sampler } from 'tone'
 import {v4 as uuid} from 'uuid'
 import DrumKit from '../DrumKit/DrumKit'
 
-const instKeys = [uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid(), uuid(),]
+
 
 /* Analogous to the Rig class in index.js. */
 export const GlobalStep = React.createContext()
@@ -20,6 +22,7 @@ export default class Trans extends Component {
         super(props)
         this.state = {
             ready: false,
+            playing: false,
             length: null,
             bpm: 90,
             step: -1,
@@ -40,11 +43,20 @@ export default class Trans extends Component {
         }, "8n");
         this.setState({
             ...this.state,
+            playing: true,
             bpm: bpm,
             clear: clear
         })
         Tone.start()
         Tone.Transport.start()
+    }
+
+    stop = () => {
+        Tone.Transport.clear(this.state.clear).stop()
+        this.setState({
+            ...this.state,
+            playing: false
+        })
     }
 
     addInstrument = (inst) => {
@@ -92,7 +104,6 @@ export default class Trans extends Component {
 
         newInstArray.splice(i,1)
 
-        console.log('new inst arry after splice: ', [...newInstArray]);
         this.setState({
             ...this.state,
             instruments: this.state.instruments.filter((inst,j)=>j !== i)
@@ -127,19 +138,19 @@ export default class Trans extends Component {
         })
     }
 
-    stop = () => {
-        Tone.Transport.clear(this.state.clear).stop()
-    }
-
     render() {
         if(this.state.ready){
-            console.log('inst in render ', [...this.state.instruments]);
             return (
             <div className = 'setup'>
-                <button className = 'setup__button' onClick = {() => this.start(this, this.state.bpm)}>
-                START
+                <button className = 'setup__play-button' onClick = {() => {
+                    if(!this.state.playing) this.start(this, this.state.bpm)
+                    if(this.state.playing) this.stop()
+                }}>
+                <img src={this.state.playing ? pause : play} alt="" className="setup__play-icon"/>
+                
                 </button>
-                <button className = 'setup__button'  onClick={this.stop}>Stop</button>
+                
+                
 
                 <div className='transport'>
                     <div className="menu">
@@ -149,35 +160,30 @@ export default class Trans extends Component {
                         addInst = {(l)=>this.addInstrument(l)} 
                         addKit={(d)=>this.addDrumKit(d)}
                     />
-                    BPM: {this.state.bpm}
-                    <input 
-                        className = 'transport__range'
-                        type="range" 
-                        name='bpm' min='60' 
-                        max = '350'     
-                        onChange={e=>this.changeValue(e)} 
-                        value={this.state.bpm}/>
+
                     </div>
 
                     <GlobalStep.Provider value = {{step: this.state.step}}>
-                        {/* the instrument panel */}
-                        {/* <InstrumentPanel 
-                            instruments = {this.state.instruments}
-                            step = {this.state.step}
-                            length = {this.state.length}
-                            removeInstrument = {this.removeInstrument}
-                        /> */}
-                        
+                    <div className="instruments">
+                        {this.state.instruments.length < 1 && <h1 className='instruments__heading'>Add an instrument to get started</h1>}
                         {[...this.state.instruments].map((i, j) => {
-                            {console.log('inst in render DEEP ', [...this.state.instruments])}
                             if(i.role === 'inst') return <Instrument key={i.id} step={this.state.step} inst = {i} length ={this.state.length}  index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></Instrument>
                             if(i.role === 'kit' ) return <DrumKit key={i.id} step={this.state.step} kit = {i.sounds} length ={this.state.length} index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></DrumKit>
                         })}
+                    </div>
                     </GlobalStep.Provider>
                 </div>
+                BPM: {this.state.bpm}
+                <input  
+                    className = 'transport__range'
+                    type="range" 
+                    name='bpm' min='60' 
+                    max = '350'     
+                    onChange={e=>this.changeValue(e)} 
+                    value={this.state.bpm}/>    
             </div>
         )} else return (
-            <select onChange = {(e) => this.setLength(e)} name="scale" id="cars">
+            <select onChange = {(e) => this.setLength(e)} name="length" id="cars">
                 <option value="4">4</option>
                 <option value="8">8</option>
                 <option value="16">16</option>

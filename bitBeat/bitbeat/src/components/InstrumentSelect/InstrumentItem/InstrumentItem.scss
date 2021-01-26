@@ -1,0 +1,75 @@
+.inst {
+    
+    font-family: 'Microsoft Yi Baiti';
+
+    &__name {
+        color: #FF5151;
+        font-size: 20px;
+        font-weight: lighter;
+        display: inline;
+        cursor: pointer;
+        padding-right: 4px;
+    }
+
+    &__wrapper {
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__form-label {
+        padding-right: 16px
+    }
+
+    &__input {
+        margin: 20px;
+        border: none;
+        border-bottom: 1px solid #FF5151;
+        outline: none;
+    }
+
+    &__select {
+        margin: 20px;
+        border: none;
+        border-bottom: 1px solid #FF5151;
+        outline: none;
+        font-family: 'Microsoft Yi Baiti';
+        font-size: 20px;
+    }
+
+    &__btn {
+        background-color: #FF5151;
+        border: none;
+        color: white;
+        margin-top: 4px;
+        padding: 0.5rem 1rem;
+        font-family: 'Microsoft Yi Baiti';
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    &__expand-icon {
+        width: 10px;
+        display: inline;
+    }
+
+    &__title-wrap {
+        display: block;
+        margin: 10px;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 1px;
+}
+  
+/* Track */
+::-webkit-scrollbar-track {
+background-color: none;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+background: #FF5151; 
+// border-radius: 10px;
+width: 2px;
+}
