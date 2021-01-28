@@ -2,11 +2,18 @@ import React, { Component } from 'react'
 import Instrument from '../Instrument/Instrument'
 import InstrumentSelect from '../InstrumentSelect/InstrumentSelect'
 import makeInstrumentLayers from '../../functions/instrument' 
+import play from '../../assets/icons/play-btn.svg'
+import pause from '../../assets/icons/pause-btn.svg'
 import * as Tone from 'tone'
 import options from '../../inst-options.js'
+import InstrumentPanel from '../InstrumentPanel/InstrumentPanel'
 import './Transport.scss'
+import save from '../../assets/icons/floppy-disk.svg'
 import { Sampler } from 'tone'
+import firebase from '../../firebase'
+import {v4 as uuid} from 'uuid'
 import DrumKit from '../DrumKit/DrumKit'
+const db = firebase.firestore()
 
 /* Analogous to the Rig class in index.js. */
 export const GlobalStep = React.createContext()
@@ -16,6 +23,7 @@ export default class Trans extends Component {
         super(props)
         this.state = {
             ready: false,
+            playing: false,
             length: null,
             bpm: 90,
             step: -1,
@@ -36,11 +44,20 @@ export default class Trans extends Component {
         }, "8n");
         this.setState({
             ...this.state,
+            playing: true,
             bpm: bpm,
             clear: clear
         })
         Tone.start()
         Tone.Transport.start()
+    }
+
+    stop = () => {
+        Tone.Transport.clear(this.state.clear).stop()
+        this.setState({
+            ...this.state,
+            playing: false
+        })
     }
 
     addInstrument = (inst) => {
@@ -50,7 +67,8 @@ export default class Trans extends Component {
             tone: inst.tone,
             sounds: inst.sounds,
             type: inst.type,
-            role: 'inst'
+            role: 'inst',
+            id: uuid(),
         }
 
         this.setState({
@@ -67,7 +85,8 @@ export default class Trans extends Component {
             ref: React.createRef(),
             layers: makeInstrumentLayers(kit.keys, this.state.length),
             sounds: kit.sounds,
-            role: 'kit'
+            role: 'kit',
+            id: uuid()
         }
 
         this.setState({
@@ -80,11 +99,15 @@ export default class Trans extends Component {
     }
 
     removeInstrument = (i) => {
+        console.log('i: ', i);
         const newInstArray = [...this.state.instruments]
+        console.log('new inst arry ', [...newInstArray]);
+
         newInstArray.splice(i,1)
+
         this.setState({
             ...this.state,
-            instruments: newInstArray
+            instruments: this.state.instruments.filter((inst,j)=>j !== i)
         })
     }
 
@@ -116,45 +139,178 @@ export default class Trans extends Component {
         })
     }
 
-    stop = () => {
-        Tone.Transport.clear(this.state.clear).stop()
+    saveBeat = () => {
+        
+        const instruments = this.state.instruments
+            .map(i => {
+                return ({
+                layers: i.ref.current.getLayers(),
+                tone: i.tone,
+                role: i.role,
+                sounds: i.sounds || 0,
+                type: i.type,
+            }
+          )
+        })
+
+        console.log(instruments);
+        
+        db.collection('beats').doc('LASTBEAT').set({           
+            bpm: this.state.bpm,
+            length: this.state.length,
+            instruments: instruments
+        })
+        .then(()=>console.log('doc written ok'))
+    }
+
+    getBeats = (t) => {
+        let beats = [];
+
+
+        db.collection("beats")
+        .get()
+        .then(function(querySnapshot) {
+            querySnapshot.forEach(function(doc) {
+                let beat = doc.data()
+                
+                if(beat.instruments){
+                    beat.instruments.forEach(i => {
+                        i.ref = React.createRef()
+                        i.id = uuid()
+                    })
+                    beats.push(beat)
+                }
+            });
+
+
+
+            // ACTUALLY the problem might just be that the correct styling is not being applied to active beats. 
+            // might not have to do all of the stuff above. Yup confirmed. so we just need to write a function that will 
+            // apply the correct styling to notes. will also have to make sure layers are ordered properly
+
+            console.log(t);
+            t.setState({
+                ...t.state,
+                bpm: beats[1].bpm,
+                length: beats[1].length,
+                instruments: beats[1].instruments,
+            })
+        })
+        .catch(function(error) {
+            console.log("Error getting documents: ", error);
+        });
+        
     }
 
     render() {
         if(this.state.ready){
             return (
-            <>
-                <button onClick = {() => this.start(this, this.state.bpm)}>
-                START
-                </button>
+                // left panel
+                <div className="container">
 
-                <button onClick = {() => this.addInstrument()}>
-                add 
-                </button>
-                <button onClick={this.stop}>Stop</button>
-                <div className='transport'>
-                    <div className="menu">
+                <div className='instrument-menu'> 
                     <InstrumentSelect 
                         instruments = { this.state.instOptions } 
                         drumKits = {this.state.kitOptions}
                         addInst = {(l)=>this.addInstrument(l)} 
                         addKit={(d)=>this.addDrumKit(d)}
-                    />
-                    BPM: {this.state.bpm}
-                    <input type="range" name='bpm' min='60' max = '350' onChange={e=>this.changeValue(e)} value={this.state.bpm}/>
-                    </div>
+                   />
+                </div>
+
+                <div className='main'>
 
                     <GlobalStep.Provider value = {{step: this.state.step}}>
-                        {/* the instrument panel */}
-                        {this.state.instruments.map((i, j) => {
-                            if(i.role === 'inst') return <Instrument step={this.state.step} inst = {i} length ={this.state.length}  index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></Instrument>
-                            if(i.role === 'kit') return <DrumKit step={this.state.step} kit = {i.sounds} length ={this.state.length} index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></DrumKit>
-                        })}
-                    </GlobalStep.Provider>
+                     <div className="instruments">
+                         {this.state.instruments.length < 1 && <h1 className='instruments__heading'>Add an instrument to get started</h1>}
+                         {[...this.state.instruments].map((i, j) => {
+                             if(i.role === 'inst') return <Instrument key={i.id} step={this.state.step} inst = {i} length ={this.state.length}  index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></Instrument>
+                             if(i.role === 'kit' ) return <DrumKit key={i.id} step={this.state.step} kit = {i.sounds} length ={this.state.length} index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></DrumKit>
+                         })}
+                     </div>
+                     </GlobalStep.Provider>
+
+                     <div className='controls'>
+                <img src={save} onClick={this.saveBeat} alt="" className="transport__save"/>
+                 <button onClick= {()=>this.getBeats(this)}>GET BEATS</button>
+                 BPM: {this.state.bpm}
+                 <input  
+                     className = 'transport__range'
+                     type="range" 
+                     name='bpm' min='60' 
+                     max = '350'     
+                     onChange={e=>this.changeValue(e)} 
+                     value={this.state.bpm}/>  
+
+                    <button className = 'setup__play-button' onClick = {() => {
+                    if(!this.state.playing) this.start(this, this.state.bpm)
+                    if(this.state.playing) this.stop()
+                    }} >
+                        <img src={this.state.playing ? pause : play} alt="" className="setup__play-icon"/>
+                    </button>
                 </div>
-            </>
+                </div>
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+            // <div className = 'setup'>
+            //     <button className = 'setup__play-button' onClick = {() => {
+            //         if(!this.state.playing) this.start(this, this.state.bpm)
+            //         if(this.state.playing) this.stop()
+            //     }}>
+            //     <img src={this.state.playing ? pause : play} alt="" className="setup__play-icon"/>
+                
+            //     </button>
+                
+            //     <div className='transport'>
+            //         <div className="menu">
+            //             Instruments
+            //         <InstrumentSelect 
+            //             instruments = { this.state.instOptions } 
+            //             drumKits = {this.state.kitOptions}
+            //             addInst = {(l)=>this.addInstrument(l)} 
+            //             addKit={(d)=>this.addDrumKit(d)}
+            //         />
+            //         </div>
+
+            //         <GlobalStep.Provider value = {{step: this.state.step}}>
+            //         <div className="instruments">
+            //             {this.state.instruments.length < 1 && <h1 className='instruments__heading'>Add an instrument to get started</h1>}
+            //             {[...this.state.instruments].map((i, j) => {
+            //                 if(i.role === 'inst') return <Instrument key={i.id} step={this.state.step} inst = {i} length ={this.state.length}  index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></Instrument>
+            //                 if(i.role === 'kit' ) return <DrumKit key={i.id} step={this.state.step} kit = {i.sounds} length ={this.state.length} index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></DrumKit>
+            //             })}
+            //         </div>
+            //         </GlobalStep.Provider>
+            //        <div className="controls">
+            //     <img src={save} onClick={this.saveBeat} alt="" className="transport__save"/>
+            //     <button onClick= {()=>this.getBeats(this)}>GET BEATS</button>
+            //     BPM: {this.state.bpm}
+            //     <input  
+            //         className = 'transport__range'
+            //         type="range" 
+            //         name='bpm' min='60' 
+            //         max = '350'     
+            //         onChange={e=>this.changeValue(e)} 
+            //         value={this.state.bpm}/>  
+            //     </div>  
+            //     </div>
+
+            // </div>
+
+
         )} else return (
-            <select onChange = {(e) => this.setLength(e)} name="scale" id="cars">
+            <select onChange = {(e) => this.setLength(e)} name="length" id="cars">
                 <option value="4">4</option>
                 <option value="8">8</option>
                 <option value="16">16</option>
@@ -163,3 +319,12 @@ export default class Trans extends Component {
         )
     }
 }
+
+
+
+
+// db.collection("times").get().then((querySnapshot) => {
+//     querySnapshot.forEach((doc) => {
+//         console.log(`${doc.id} => ${doc.data()}`);
+// });
+// });

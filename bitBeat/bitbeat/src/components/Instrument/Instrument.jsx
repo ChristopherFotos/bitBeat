@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import * as Tone from 'tone'
 import Row from '../Row/Row'
-import C1 from '../../samples/rhodes/US_Rhodes_C1.wav'
 import './Instrument.scss'
+import remove from '../../assets/icons/x.svg'
 import makeInstrumentLayers from '../../functions/instrument'
 import { Time } from 'tone';
 
@@ -15,32 +15,8 @@ export default class Instrument extends Component {
         }
     }
 
-    changeLength(l){
-        
-        // console.log(l);
-        // const prevLength = this.state.length
+    getLayers = () => this.state.layers
 
-        // let newLayers = {}
-        
-        // for(const key in this.state.layers){
-        //     newLayers[key] = this.state.layers[key]
-
-
-        //         for(let i = 0; i < this.props.length-prevLength; i++){
-        //             newLayers[key].push(0)
-        //         }
-             
-            
-        // }    
-
-        // console.log('length in props', this.props.length);
-    
-        this.setState({
-            ...this.state,
-            layers: makeInstrumentLayers(Object.keys(this.state.layers), l),
-            length: l
-        })
-    }
 
     componentDidMount(){
         this.setState({
@@ -82,9 +58,8 @@ export default class Instrument extends Component {
 
     render() {
         return (  
-            <>
-                <button onClick={()=>this.props.remove(this.props.index)}>remove</button>
-                <div className = 'instrument'>              
+                <div className = 'instrument'>
+                    <img src={remove} className= 'instrument__remove-btn' onClick={()=>this.props.remove(this.props.index)} />             
                     {
                         // creating a Row component for each member of the array and passing it a layer
                         this.renderRows()
@@ -92,7 +67,6 @@ export default class Instrument extends Component {
                         .map(l => <Row placeBeat = {this.placeBeat} tone = {l[0]} layer = {l.filter(i => typeof i !== 'string')} />)
                     }     
                 </div>
-            </>
         )
     }
 }
