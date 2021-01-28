@@ -5,5 +5,103 @@
 
     &__remove-btn {
         width: 15px;
+    };
+
+    &__btn-wrap{
+        display: flex;
+        flex-direction: column;
+        height: 80px;
+        align-items: flex-start;
+        overflow: scroll;
+    }
+
+    &__effect-rack {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        padding-top: 16px;
+        padding-left: 21px;
+    }
+
+    &__effects-label {
+        text-align: left;
+    }
+
+    &__effect-btn {
+        color:#FF4A4A;;
+        border-radius: none;
+        display: block;
+        margin: 8px;
+        text-align: left;
+        cursor: pointer;
     }
 }
+
+input[type=range] {
+    -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+
+    background: transparent; /* Otherwise white in Chrome */
+  }
+  
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+  }
+  
+  input[type=range]:focus {
+    outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+  }
+  
+  input[type=range]::-ms-track {
+    width: 100%;
+    cursor: pointer;
+  
+    /* Hides the slider so custom styles can be added */
+    background: transparent; 
+    border-color: transparent;
+    color: transparent;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    background: #FF4A4A;
+    cursor: pointer;
+    margin-top: 0px; 
+    transform: translateY(-10px);
+  }
+  
+  /* All the same stuff for Firefox */
+ 
+  
+  /* All the same stuff for IE */
+  input[type=range]::-ms-thumb {
+
+    height: 10px;
+    width: 10px;
+    clip-path: circle;
+    background: #AD75FF;
+    cursor: pointer;
+  }
+
+  input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 2px;
+    cursor: pointer;
+    background: #FF4A4A;
+  }
+  
+  
+//   input[type=range]::-moz-range-track {
+//     width: 100%;
+//     height: 8.4px;
+//     cursor: pointer;
+//     box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+//     background: #3071a9;
+//     border-radius: 1.3px;
+//     border: 0.2px solid #010101;
+//   }
+  
+
+
+

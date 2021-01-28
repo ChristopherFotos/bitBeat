@@ -35,6 +35,7 @@ export default class Trans extends Component {
 
     start = (t,bpm) => {
         Tone.Transport.bpm.value = bpm
+        Tone.Transport.swing = 1
         const clear = Tone.Transport.scheduleRepeat(function(time){
             t.incrementStep()
             t.state.instruments.forEach(i => {
@@ -229,7 +230,7 @@ export default class Trans extends Component {
                      </div>
                      </GlobalStep.Provider>
 
-                     <div className='controls'>
+                <div className='controls'>
                 <img src={save} onClick={this.saveBeat} alt="" className="transport__save"/>
                  <button onClick= {()=>this.getBeats(this)}>GET BEATS</button>
                  BPM: {this.state.bpm}
