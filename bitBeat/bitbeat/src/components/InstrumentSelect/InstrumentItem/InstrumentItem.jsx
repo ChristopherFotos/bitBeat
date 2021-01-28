@@ -50,7 +50,7 @@ export default class InstrumentItem extends Component {
             
             <div className="inst__title-wrap">
             <h3 className="inst__name" onClick={this.expand}>{this.props.inst.name}</h3>
-            <img className='inst__expand-icon' src={collapse} alt=""/>
+            <img  className='inst__expand-icon' onClick={this.expand} src={collapse} alt="" />
             </div>
 
             <div className='inst__wrapper'>
@@ -91,7 +91,7 @@ export default class InstrumentItem extends Component {
                 <>
                     <div className="inst__title-wrap">
                     <h3 className="inst__name" onClick={this.expand}>{this.props.inst.name}</h3> 
-                    <img className='inst__expand-icon' src={expand} alt=""/>
+                    <img className='inst__expand-icon' src={expand} onClick={this.expand} alt=""/>
                     </div>
                 </>
             )

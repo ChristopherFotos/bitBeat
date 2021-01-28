@@ -1,10 +1,11 @@
 .App {
-  text-align: center;
+
 }
 
 html,body{
   margin: none;
   padding: none;
+  overflow: hidden;
 }
 
 .App-logo {

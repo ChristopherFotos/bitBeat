@@ -15,32 +15,8 @@ export default class Instrument extends Component {
         }
     }
 
-    changeLength(l){
-        
-        // console.log(l);
-        // const prevLength = this.state.length
+    getLayers = () => this.state.layers
 
-        // let newLayers = {}
-        
-        // for(const key in this.state.layers){
-        //     newLayers[key] = this.state.layers[key]
-
-
-        //         for(let i = 0; i < this.props.length-prevLength; i++){
-        //             newLayers[key].push(0)
-        //         }
-             
-            
-        // }    
-
-        // console.log('length in props', this.props.length);
-    
-        this.setState({
-            ...this.state,
-            layers: makeInstrumentLayers(Object.keys(this.state.layers), l),
-            length: l
-        })
-    }
 
     componentDidMount(){
         this.setState({

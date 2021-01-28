@@ -41,7 +41,6 @@ const options = {
         baseUrl: "http://localhost:3000/samples/digi-synth/",
         urls: {
             C3:"DigiMass_C3.wav",
-            C4:"DigiMass_C3.wav",
         },
         type: 'sampler'
     },

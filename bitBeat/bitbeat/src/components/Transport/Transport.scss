@@ -1,17 +1,32 @@
 .transport {
     display: flex;
-    font-family: 'Microsoft Yi Baiti';
+    
 
     &__range {
         position: relative;
     }
+
+    &__save {
+        width: 20px;
+    }
+}
+
+.container {
+    display: flex;
+    font-family: 'Microsoft Yi Baiti';
+}
+
+
+
+.instrument-select{
+    width: 8vw
 }
 
 .instruments {
     display: flex;
     border-bottom: 1px solid #c7c7c7;
     height: 70vh;
-    width: 100vw;
+    width: 100%;
     overflow: scroll;
 
     &__heading {
@@ -21,6 +36,16 @@
         margin: auto;
     }
 }
+
+.controls {
+    height: 30vh;
+}
+
+.main {
+    width: 88vw;
+}
+
+
 
 .setup {
     &__play-button{
