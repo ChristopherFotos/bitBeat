@@ -30,6 +30,5 @@ const notes = {
     }
 }
 
-console.log(notes.getScale('D', 'major', 1))
 
 export default notes

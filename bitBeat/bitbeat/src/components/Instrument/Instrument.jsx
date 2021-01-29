@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import * as Tone from 'tone'
 import Row from '../Row/Row'
 import './Instrument.scss'
+import Pedal from '../Pedal/Pedal'
+import {v4 as uuid} from 'uuid'
 import remove from '../../assets/icons/x.svg'
 import makeInstrumentLayers from '../../functions/instrument'
 import { Time } from 'tone';
@@ -14,7 +16,8 @@ export default class Instrument extends Component {
             layers : {},
             volume: -12,
             volumeNode: new Tone.Volume, 
-            effects: []
+            effectsObjects: [],
+            effectsChain: []
         }
     }
 
@@ -31,35 +34,45 @@ export default class Instrument extends Component {
     }
 
     addEffect(effect, val) {
-        const newChain = [...this.state.effects]
-        newChain.push(new Tone[effect](...val))
-
+        const newObjectArray = [...this.state.effectsObjects]
         
+        newObjectArray.push({
+            node: new Tone[effect](...val),
+            type: effect,
+            id: uuid()
+        })
+
         this.setState({
-            ...this.state, 
-            effects: newChain
+            ...this.state,
+            effectsObjects: newObjectArray,
+            effects: newObjectArray.map(o => o.node)
         }, () => { this.state.sound.chain(...this.state.effects, this.state.volumeNode)})
+    }
 
-        
+    updateEffect = (effectId, property, val) => {
+        // copy the current effectsObjects array
+        const newEffectsObjects = [...this.state.effectsObjects]
+        // get the index of the effect we want to target
 
-       
+        let effect = newEffectsObjects.find(obj => obj.id === effectId)
+
+        // reference that effect by the index
+        effect.node.set({[property]: val})
+
+        this.setState({
+            ...this.state,
+            effectsObjects: newEffectsObjects, 
+        })
+        // we may have to call the chain method again here
     }
 
     setVolume = (e) => {
-
-        let newVOlume 
-        
-        // e.target.value <= 1? newGain = e.target.value : newGain = e.target.value * (e.target.value / 2)
-
-        // console.log(newGain);
-
         this.setState({
             ...this.state,
             volume: e.target.value
         })
 
-        this.state.volumeNode.set({volume:e.target.value})
- 
+        this.state.volumeNode.set({volume:e.target.value}) 
     }
 
     go(){
@@ -125,7 +138,16 @@ export default class Instrument extends Component {
                         <div className="instrument__volume-wrap">
                             <label htmlFor="volume"> volume </label>
                             <input name = 'volume' style={{width: '400px'}} type="range" min='-55' max='20' onChange={e=>this.setVolume(e)} value={this.state.gain}/>
+                            {
+                                this.state.effectsObjects.map(obj => {
+                                    return(
+                                    <Pedal change={(id,property,val)=>this.updateEffect(id,property,val)} 
+                                    key={obj.id} 
+                                    effect={obj}
+                                />)})
+                            }
                         </div>
+                        
                     </div>
                 </div>
         )
