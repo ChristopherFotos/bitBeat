@@ -43,7 +43,7 @@ export default class Pedal extends Component {
         })
 
         this.rangeRef.current.style.boxShadow = `10px 10px 90px ${this.state[e.target.name]}px #ff4a4a !important;`
-        console.log('shaodow: ' , this.rangeRef.current.style.boxShadow);
+        console.log('shaodow: ' ,);
     }
 
     changeGlow = (name)=> {

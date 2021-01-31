@@ -1,5 +1,7 @@
 import React, { useState, useContext } from 'react'
 import { GlobalStep } from '../Transport/Transport'
+import FadeIn from 'react-fade-in'
+
 
 // import cons[state, setstate] = useState(initialState)
 
@@ -13,11 +15,13 @@ export default function Beat (props) {
     }
 
     return (
+        <FadeIn>
         <div onClick = {() => {
             setActive(!active)
             props.flip(props.layerKey, props.index)
         }} 
             className = {`beat ${active ? 'beat--active' : ''}${step.step === props.index  ? 'beat--playing' : ''}`}>
         </div>
+        </FadeIn>
     )
 }
