@@ -5,7 +5,9 @@ import makeInstrumentLayers from '../../functions/instrument'
 import play from '../../assets/icons/play-btn.svg'
 import pause from '../../assets/icons/pause-btn.svg'
 import * as Tone from 'tone'
+import logo from '../../assets/logo-bold.png'
 import options from '../../inst-options.js'
+import Draggable from 'react-draggable';
 import InstrumentPanel from '../InstrumentPanel/InstrumentPanel'
 import './Transport.scss'
 import save from '../../assets/icons/floppy-disk.svg'
@@ -68,6 +70,7 @@ export default class Trans extends Component {
             tone: inst.tone,
             sounds: inst.sounds,
             type: inst.type,
+            name: inst.tone.name,
             role: 'inst',
             id: uuid(),
         }
@@ -183,12 +186,6 @@ export default class Trans extends Component {
                 }
             });
 
-
-
-            // ACTUALLY the problem might just be that the correct styling is not being applied to active beats. 
-            // might not have to do all of the stuff above. Yup confirmed. so we just need to write a function that will 
-            // apply the correct styling to notes. will also have to make sure layers are ordered properly
-
             console.log(t);
             t.setState({
                 ...t.state,
@@ -208,20 +205,41 @@ export default class Trans extends Component {
             return (
                 // left panel
                 <div className="container">
+                
+                <div className='controls'>
+                        <InstrumentSelect 
+                            instruments = { this.state.instOptions } 
+                            drumKits = {this.state.kitOptions}
+                            addInst = {(l)=>this.addInstrument(l)} 
+                            addKit={(d)=>this.addDrumKit(d)}
+                        />
+                        <div className="controls__wrap">
+                        <button className = 'setup__play-button' onClick = {() => {
+                        if(!this.state.playing) this.start(this, this.state.bpm)
+                        if(this.state.playing) this.stop()
+                        }} >
+                        <img src={this.state.playing ? pause : play} alt="" className="setup__play-icon"/>
+                        </button>
+                        <div className="controls__bpm-wrap">
+                            BPM: {this.state.bpm}
+                            <input  
+                                className = 'transport__bpm'
+                                type="range" 
+                                name='bpm' min='60' 
+                                max = '250'     
+                                onChange={e=>this.changeValue(e)} 
+                                value={this.state.bpm}
+                            /> 
+                        </div> 
+                        </div>
+                    </div>
 
-                <div className='instrument-menu'> 
-                    <InstrumentSelect 
-                        instruments = { this.state.instOptions } 
-                        drumKits = {this.state.kitOptions}
-                        addInst = {(l)=>this.addInstrument(l)} 
-                        addKit={(d)=>this.addDrumKit(d)}
-                   />
-                </div>
-
+                {/* Main panel */}
                 <div className='main'>
-
+                <img src={logo} className='logo' alt=""/>
                     <GlobalStep.Provider value = {{step: this.state.step}}>
                      <div className="instruments">
+                     
                          {this.state.instruments.length < 1 && <h1 className='instruments__heading'>Add an instrument to get started</h1>}
                          {[...this.state.instruments].map((i, j) => {
                              if(i.role === 'inst') return <Instrument key={i.id} step={this.state.step} inst = {i} length ={this.state.length}  index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></Instrument>
@@ -230,88 +248,16 @@ export default class Trans extends Component {
                      </div>
                      </GlobalStep.Provider>
 
-                <div className='controls'>
-                <img src={save} onClick={this.saveBeat} alt="" className="transport__save"/>
-                 <button onClick= {()=>this.getBeats(this)}>GET BEATS</button>
-                 BPM: {this.state.bpm}
-                 <input  
-                     className = 'transport__range'
-                     type="range" 
-                     name='bpm' min='60' 
-                     max = '350'     
-                     onChange={e=>this.changeValue(e)} 
-                     value={this.state.bpm}/>  
 
-                    <button className = 'setup__play-button' onClick = {() => {
-                    if(!this.state.playing) this.start(this, this.state.bpm)
-                    if(this.state.playing) this.stop()
-                    }} >
-                        <img src={this.state.playing ? pause : play} alt="" className="setup__play-icon"/>
-                    </button>
+                    
+                   
                 </div>
-                </div>
-
-                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-            // <div className = 'setup'>
-            //     <button className = 'setup__play-button' onClick = {() => {
-            //         if(!this.state.playing) this.start(this, this.state.bpm)
-            //         if(this.state.playing) this.stop()
-            //     }}>
-            //     <img src={this.state.playing ? pause : play} alt="" className="setup__play-icon"/>
                 
-            //     </button>
-                
-            //     <div className='transport'>
-            //         <div className="menu">
-            //             Instruments
-            //         <InstrumentSelect 
-            //             instruments = { this.state.instOptions } 
-            //             drumKits = {this.state.kitOptions}
-            //             addInst = {(l)=>this.addInstrument(l)} 
-            //             addKit={(d)=>this.addDrumKit(d)}
-            //         />
-            //         </div>
 
-            //         <GlobalStep.Provider value = {{step: this.state.step}}>
-            //         <div className="instruments">
-            //             {this.state.instruments.length < 1 && <h1 className='instruments__heading'>Add an instrument to get started</h1>}
-            //             {[...this.state.instruments].map((i, j) => {
-            //                 if(i.role === 'inst') return <Instrument key={i.id} step={this.state.step} inst = {i} length ={this.state.length}  index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></Instrument>
-            //                 if(i.role === 'kit' ) return <DrumKit key={i.id} step={this.state.step} kit = {i.sounds} length ={this.state.length} index = {j} layers = {i.layers} ref={i.ref} remove={this.removeInstrument}></DrumKit>
-            //             })}
-            //         </div>
-            //         </GlobalStep.Provider>
-            //        <div className="controls">
-            //     <img src={save} onClick={this.saveBeat} alt="" className="transport__save"/>
-            //     <button onClick= {()=>this.getBeats(this)}>GET BEATS</button>
-            //     BPM: {this.state.bpm}
-            //     <input  
-            //         className = 'transport__range'
-            //         type="range" 
-            //         name='bpm' min='60' 
-            //         max = '350'     
-            //         onChange={e=>this.changeValue(e)} 
-            //         value={this.state.bpm}/>  
-            //     </div>  
-            //     </div>
-
-            // </div>
-
+                </div>
 
         )} else return (
-            <select onChange = {(e) => this.setLength(e)} name="length" id="cars">
+            <select onChange = {(e) => this.setLength(e)} name="length" id="length">
                 <option value="4">4</option>
                 <option value="8">8</option>
                 <option value="16">16</option>

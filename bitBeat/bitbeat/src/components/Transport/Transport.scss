@@ -18,34 +18,78 @@
 
 
 
-.instrument-select{
-    width: 8vw
+// .instrument-select{
+//     width: 8vw;
+//     // border: none;
+//     padding: 0;
+// }
+
+.instrument-menu {
+    position: absolute;
+    top: 16px;
+    right: 16px;
 }
 
 .instruments {
-    display: flex;
-    border-bottom: 1px solid #c7c7c7;
-    height: 70vh;
+    // display: flex;
+    // border-bottom: 1px solid #c7c7c7;
+    min-height: 100vh;
+    // overflow: scroll;
     width: 100%;
-    overflow: scroll;
+    margin: auto;
+    &__button-wrap {
+        text-align: left;
+        border-left: 1px solid #FF5151;
+        padding-left: 8px;
+    }
 
     &__heading {
         font-weight: normal;
         font-size: 5rem;
+        // display: inline-block;
+        width: 100%;
+        text-align: center;
         color: #c7c7c7;
-        margin: auto;
+        margin: 20% auto;
+        transform: translateY(-50%);
     }
 }
 
+.logo {
+    padding: 1rem;
+}
+
 .controls {
-    height: 30vh;
+    &__wrap {
+        position: absolute;
+        bottom: 16px;
+        text-align: center;
+    }
+    height: 90vh;
+    padding: 1rem;
+    display: flex;
+    z-index: 9999;
+    width: 10%;
+    overflow: scroll;
+    // color: white;
+    background-color: #3d3d3d;
+    position:fixed;
+    // border: 1px solid #c7c7c7;
+    // left: 16px;
+    // bottom: 16px;
+    flex-direction: column;
+    align-content: space-between;
 }
 
 .main {
-    width: 88vw;
+    width: 70vw;
+    margin: auto;
+    background-color: #4d4d4d;
 }
 
-
+input[type=range] {
+    box-shadow: 0px 0px 10px 1px #ff4a4a;
+}
 
 .setup {
     &__play-button{
@@ -56,7 +100,8 @@
         border: none;
         // clip-path: circle();
         border-radius: 999999999px;
-        position: absolute;
+        // position: absolute;
+        margin: 16px 0 16px auto;
         bottom: 3%;
         right: 3%;
         outline: none;
@@ -67,4 +112,3 @@
         width: 20px;
     }
 }
-

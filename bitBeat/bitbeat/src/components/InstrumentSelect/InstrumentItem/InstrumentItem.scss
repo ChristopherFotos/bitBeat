@@ -21,15 +21,19 @@
     }
 
     &__input {
-        margin: 20px;
+        margin: 20px 0;
         border: none;
+        background-color: transparent;
+        color: white;
         border-bottom: 1px solid #FF5151;
         outline: none;
     }
 
     &__select {
-        margin: 20px;
+        margin: 20px 0;
         border: none;
+        background-color: transparent;
+        color: white;
         border-bottom: 1px solid #FF5151;
         outline: none;
         font-family: 'Microsoft Yi Baiti';
@@ -60,7 +64,7 @@
 }
 
 ::-webkit-scrollbar {
-    width: 1px;
+    width: 2px;
 }
   
 /* Track */

@@ -4,6 +4,7 @@ import notes from '../../../functions/music'
 import expand from '../../../assets/icons/down-arrow.svg'
 import collapse from '../../../assets/icons/up-arrow.svg'
 import './InstrumentItem.scss'
+import Collapsible from 'react-collapsible';
 
 export default class InstrumentItem extends Component {
     state = {
@@ -44,14 +45,21 @@ export default class InstrumentItem extends Component {
     }
 
     render() {
-        if (this.state.expanded){
+        // if (this.state.expanded){
         return (
+            
+            <Collapsible
+                trigger = {this.props.inst.name}
+                triggerStyle = {{
+                    color: "#ff4a4a",
+                    fontSize: '20px',
+                    cursor: 'pointer'
+                }}
+                easing = 'ease-in-out'
+            >
             <div className='inst'>
             
-            <div className="inst__title-wrap">
-            <h3 className="inst__name" onClick={this.expand}>{this.props.inst.name}</h3>
-            <img  className='inst__expand-icon' onClick={this.expand} src={collapse} alt="" />
-            </div>
+  
 
             <div className='inst__wrapper'>
                 <label className='inst__form-label' htmlFor="key">Key:</label>
@@ -77,6 +85,7 @@ export default class InstrumentItem extends Component {
                             {
                                 urls: this.props.inst.urls,
                                 baseUrl: this.props.inst.baseUrl,
+                                name: this.props.inst.name
                             },
                             this.props.inst.type
                     )}>
@@ -85,16 +94,17 @@ export default class InstrumentItem extends Component {
                 </span>
             </div>
             </div>
+            </Collapsible>
         )
-        } else {
-            return (
-                <>
-                    <div className="inst__title-wrap">
-                    <h3 className="inst__name" onClick={this.expand}>{this.props.inst.name}</h3> 
-                    <img className='inst__expand-icon' src={expand} onClick={this.expand} alt=""/>
-                    </div>
-                </>
-            )
-        }
+        // } else {
+        //     return (
+        //         <>
+        //             <div className="inst__title-wrap">
+        //             <h3 className="inst__name" onClick={this.expand}>{this.props.inst.name}</h3> 
+        //             <img className='inst__expand-icon' src={expand} onClick={this.expand} alt=""/>
+        //             </div>
+        //         </>
+        //     )
+        // }
     }
 }

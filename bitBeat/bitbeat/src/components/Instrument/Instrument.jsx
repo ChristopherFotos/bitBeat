@@ -5,6 +5,7 @@ import './Instrument.scss'
 import Pedal from '../Pedal/Pedal'
 import {v4 as uuid} from 'uuid'
 import remove from '../../assets/icons/x.svg'
+import Collapsable from 'react-collapsible'
 import makeInstrumentLayers from '../../functions/instrument'
 import { Time } from 'tone';
 
@@ -34,14 +35,17 @@ export default class Instrument extends Component {
     }
 
     addEffect(effect, val) {
+        // copy the array of effects objects
         const newObjectArray = [...this.state.effectsObjects]
         
+        // push a new effect object in there using the effect param, which is a string
         newObjectArray.push({
             node: new Tone[effect](...val),
             type: effect,
             id: uuid()
         })
 
+        // replace the old effectsObjects array with the clone we just manipulated
         this.setState({
             ...this.state,
             effectsObjects: newObjectArray,
@@ -52,17 +56,19 @@ export default class Instrument extends Component {
     updateEffect = (effectId, property, val) => {
         // copy the current effectsObjects array
         const newEffectsObjects = [...this.state.effectsObjects]
-        // get the index of the effect we want to target
 
+        // get the effect object whos id mathces effectId
         let effect = newEffectsObjects.find(obj => obj.id === effectId)
 
-        // reference that effect by the index
+        // set the property specified by the property param equal to the val param
         effect.node.set({[property]: val})
+        console.log('NEW NODE VAL: ', effect.node.get(property));
 
+        // set state, replacing the old effects objects array with the one we just manipulated
         this.setState({
             ...this.state,
             effectsObjects: newEffectsObjects, 
-        })
+        }, () => { this.state.sound.chain(...this.state.effects, this.state.volumeNode)})
         // we may have to call the chain method again here
     }
 
@@ -120,6 +126,14 @@ export default class Instrument extends Component {
         return (  
                 <div className = 'instrument'>
                     <img src={remove} className= 'instrument__remove-btn' onClick={()=>this.props.remove(this.props.index)} /> 
+                    <h3 className="instrument__name">{this.props.inst.name}</h3>
+                    <div className="instrument__volume-wrap">
+                        <label htmlFor="volume"> volume </label>
+                        <input orient="vertical" className='instrument__volume' name = 'volume' style={{width: '400px'}} type="range" min='-55' max='20' onChange={e=>this.setVolume(e)} value={this.state.gain}/>
+                    </div>
+
+                    <div className="instrument__wrap">
+                    
                                
                     {
                         // creating a Row component for each member of the array and passing it a layer
@@ -127,18 +141,21 @@ export default class Instrument extends Component {
                         .reverse()
                         .map(l => <Row placeBeat = {this.placeBeat} tone = {l[0]} layer = {l.filter(i => typeof i !== 'string')} />)
                     }     
-
-                    <div className="instrument__effect-rack">
+                    <div className="instrument__wrap">
+                        <div className="instrument__effect-rack">
+                         <Collapsable trigger='Effects:' easing = 'cubic-bezier(1, 2, 0.6, 0.7)' triggerStyle={{cursor: 'pointer'}}> 
                         <div className="instruments__button-wrap">  
-                            <span className='instruments__effects-label'>Effects: </span>
-                            <span className = 'instrument__effect-btn' onClick={() => this.addEffect('Reverb', [10])}>Reverb</span> 
-                            <span className = 'instrument__effect-btn' onClick={() => this.addEffect('Distortion',[1])}>distortion</span> 
-                            <span className = 'instrument__effect-btn' onClick={() => this.addEffect('FeedbackDelay', ['16n', 0.5])}>FBdelay</span>
-                        </div> 
-                        <div className="instrument__volume-wrap">
-                            <label htmlFor="volume"> volume </label>
-                            <input name = 'volume' style={{width: '400px'}} type="range" min='-55' max='20' onChange={e=>this.setVolume(e)} value={this.state.gain}/>
-                            {
+
+                            <span className = 'instrument__effect-btn' onClick={() => this.addEffect('Reverb', [10])}>reverb</span> 
+                            <span className = 'instrument__effect-btn' onClick={() => this.addEffect('Distortion',[0.5])}>distortion</span> 
+                            <span className = 'instrument__effect-btn' onClick={() => this.addEffect('FeedbackDelay', ['16n', 0.5])}>feedback delay</span>
+                            <span className = 'instrument__effect-btn' onClick={() => this.addEffect('Vibrato', [1, 1])}>vibrato</span>
+                            <span className = 'instrument__effect-btn' onClick={() => this.addEffect('JCReverb', [0.5])}>room reverb</span>
+                            <span className = 'instrument__effect-btn' onClick={() => this.addEffect('EQ3', [3,3,3])}>EQ3</span>
+                        </div>
+                        </Collapsable>  
+                        <div className="instrument__pedals">
+                        {
                                 this.state.effectsObjects.map(obj => {
                                     return(
                                     <Pedal change={(id,property,val)=>this.updateEffect(id,property,val)} 
@@ -147,7 +164,9 @@ export default class Instrument extends Component {
                                 />)})
                             }
                         </div>
+                        </div> 
                         
+                    </div>
                     </div>
                 </div>
         )
