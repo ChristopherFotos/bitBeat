@@ -57,11 +57,9 @@ export default class InstrumentItem extends Component {
                     cursor: 'pointer'
                 }}
                 easing = 'ease-in-out'
+                className='inst'
             >
             <div className='inst'>
-            
-  
-
             <div className='inst__wrapper'>
                 <label className='inst__form-label' htmlFor="key">Key:</label>
                 <input className='inst__input' name='key' onChange = {(e) => this.handleChange(e)} type="text" value={this.state.key}/>
