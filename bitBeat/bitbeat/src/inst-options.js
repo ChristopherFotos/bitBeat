@@ -55,6 +55,219 @@ const options = {
         },
         type: 'sampler'
     },
+
+    // NEW INSTS    
+
+    {
+        name: 'Acid Synth',
+        baseUrl: "http://localhost:3000/samples/acid-synth/",
+        urls: {
+            C1:"c1.wav",
+            C2:"c2.wav",
+            C3:"c3.wav",
+        },
+        type: 'sampler'
+    },
+    {
+        name: 'Elkaph Synth',
+        baseUrl: "http://localhost:3000/samples/elkaph-synth/",
+        urls: {
+            C2:"ElkaC2.wav",
+            C3:"ElkaC3.wav",
+            C4:"ElkaC4.wav",
+        },
+        type: 'sampler'
+    },
+    {
+        name: 'Female choir',
+        baseUrl: "http://localhost:3000/samples/female-choir/",
+        urls: {           
+            C2:"Fem_C2.wav",
+            C3:"Fem_C3.wav",
+            C4:"Fem_C4.wav",
+        },
+        type: 'sampler'
+    },
+    {
+        name: 'Breathy Female Vocals',
+        baseUrl: "http://localhost:3000/samples/female-breathy/",
+        urls: {
+            E3:"Aah-E.wav",
+        },
+        type: 'sampler'
+    },
+    {
+        name: 'Guitar',
+        baseUrl: "http://localhost:3000/samples/guitar/",
+        urls: {
+            D2:"D2.wav",
+            D4:"D4.wav",
+            E1:"E1.wav",
+            E3:"E3.wav",
+        },
+        type: 'sampler'
+    },
+    {
+        name: 'Harmonic Synth',
+        baseUrl: "http://localhost:3000/samples/harm-synth/",
+        urls: {
+            C1:"C1.wav",
+            C2:"C2.wav",
+            C3:"C3.wav",
+            C4:"C4.wav",
+            C5:"C5.wav",
+        },
+        type: 'sampler'
+    },
+    {
+        name: 'Hard Synth Bass',
+        baseUrl: "http://localhost:3000/samples/hard-res-synth-bass/",
+        urls: {
+            C1:"C1.wav",
+            C2:"C2.wav",
+            E1:"E1.wav",
+        },
+        type: 'sampler'
+    },
+    {
+        name: 'Must Destroy You Bass',
+        baseUrl: "http://localhost:3000/samples/must-destroy-you-bass-1/",
+        urls: {
+            C1:"C1.wav",
+        },
+        type: 'sampler'
+    },
+    {
+        name: 'Slap Bass',
+        baseUrl: "http://localhost:3000/samples/slap-bass/",
+        urls: {
+            E1:"slap-E1.wav",
+            E2:"slap-E2.wav",
+            E3:"slap-E3.wav",
+        },
+        type: 'sampler'
+    },
+    {
+        name: 'Square Bass',
+        baseUrl: "http://localhost:3000/samples/square-bass/",
+        urls: {
+            A2:"A2.wav",
+            C2:"C2.wav",
+            C3:"C3.wav",
+            B4:"B4.wav",
+        },
+        type: 'sampler'
+    },
+    {
+        name: 'Synth Bass',
+        baseUrl: "http://localhost:3000/samples/synthbass/",
+        urls: {
+            C1:"C1.wav",
+            C2:"C2.wav",
+            E1:"E1.wav",
+        },
+        type: 'sampler'
+    },
+    // {
+    //     name: '',
+    //     baseUrl: "http://localhost:3000/samples/",
+    //     urls: {
+    //         C1:"",
+    //         C2:"",
+    //         C3:"",
+    //         C4:"",
+    //     },
+    //     type: 'sampler'
+    // },
+    // {
+    //     name: '',
+    //     baseUrl: "http://localhost:3000/samples/",
+    //     urls: {
+    //         C1:"",
+    //         C2:"",
+    //         C3:"",
+    //         C4:"",
+    //     },
+    //     type: 'sampler'
+    // },
+    // {
+    //     name: '',
+    //     baseUrl: "http://localhost:3000/samples/",
+    //     urls: {
+    //         C1:"",
+    //         C2:"",
+    //         C3:"",
+    //         C4:"",
+    //     },
+    //     type: 'sampler'
+    // },
+    // {
+    //     name: '',
+    //     baseUrl: "http://localhost:3000/samples/",
+    //     urls: {
+    //         C1:"",
+    //         C2:"",
+    //         C3:"",
+    //         C4:"",
+    //     },
+    //     type: 'sampler'
+    // },
+    // {
+    //     name: '',
+    //     baseUrl: "http://localhost:3000/samples/",
+    //     urls: {
+    //         C1:"",
+    //         C2:"",
+    //         C3:"",
+    //         C4:"",
+    //     },
+    //     type: 'sampler'
+    // },
+    // {
+    //     name: '',
+    //     baseUrl: "http://localhost:3000/samples/",
+    //     urls: {
+    //         C1:"",
+    //         C2:"",
+    //         C3:"",
+    //         C4:"",
+    //     },
+    //     type: 'sampler'
+    // },
+    // {
+    //     name: '',
+    //     baseUrl: "http://localhost:3000/samples/",
+    //     urls: {
+    //         C1:"",
+    //         C2:"",
+    //         C3:"",
+    //         C4:"",
+    //     },
+    //     type: 'sampler'
+    // },
+    // {
+    //     name: '',
+    //     baseUrl: "http://localhost:3000/samples/",
+    //     urls: {
+    //         C1:"",
+    //         C2:"",
+    //         C3:"",
+    //         C4:"",
+    //     },
+    //     type: 'sampler'
+    // },
+    // {
+    //     name: '',
+    //     baseUrl: "http://localhost:3000/samples/",
+    //     urls: {
+    //         C1:"",
+    //         C2:"",
+    //         C3:"",
+    //         C4:"",
+    //     },
+    //     type: 'sampler'
+    // },
+
     ],
 
     kit: [

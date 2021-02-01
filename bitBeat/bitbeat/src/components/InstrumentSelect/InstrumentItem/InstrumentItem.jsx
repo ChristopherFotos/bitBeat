@@ -4,6 +4,7 @@ import notes from '../../../functions/music'
 import expand from '../../../assets/icons/down-arrow.svg'
 import collapse from '../../../assets/icons/up-arrow.svg'
 import './InstrumentItem.scss'
+
 import Collapsible from 'react-collapsible';
 
 export default class InstrumentItem extends Component {
