@@ -1,10 +1,14 @@
 
 .instrument-select {
-    width: 200px;
-    height: 100vh;
-    border-right: 1px solid #ccc;
+    // width: 200px;
+    height: 60%;
+
+    // border-bottom: 1px solid #c4c4c4;
+    width: 8%;
     overflow-y: scroll;
+    height: 80vh;
     font-family: 'Microsoft Yi Baiti';
     text-align: right;
-    padding: 20px;
+    padding: 40px;
+    position: fixed;
 }

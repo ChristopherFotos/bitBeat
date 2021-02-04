@@ -1,0 +1,28 @@
+.pedal {
+    width: auto;
+    min-width: 250px;
+    padding: 0 1rem;
+    height: 200px;
+    // border-left: 1px solid #ff4a4a;
+    // background-color: rgb(143, 143, 143);
+    margin: 8px;
+    text-align: left;
+
+    &__range-wrap {
+        display:flex;
+        flex-direction: column;
+    }
+
+    input {
+        box-shadow: 0px 0px 10px 1px #ff4a4a;
+    }
+
+    &__heading {
+        margin: 0;
+        font-size: 40px;
+    }
+
+    label {
+        margin: 5px 0;
+    }
+}

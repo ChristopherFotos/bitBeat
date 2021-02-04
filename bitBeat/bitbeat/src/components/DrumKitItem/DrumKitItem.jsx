@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Player } from 'tone'
-
+import '../InstrumentSelect/InstrumentItem/InstrumentItem.scss'
 
 export default class DrumKitItem extends Component {
 
@@ -19,13 +19,13 @@ export default class DrumKitItem extends Component {
 
     render() {
         return(
-            <button
+            <h3 className='inst__name'
                 onClick={() => this.props.addKit(
                     this.makeSounds()
                 )}
             >
                 {this.props.kit.name}
-            </button>
+        </h3>
         )
     }
 }

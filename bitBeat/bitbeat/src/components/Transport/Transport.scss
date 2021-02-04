@@ -18,34 +18,151 @@
 
 
 
-.instrument-select{
-    width: 8vw
+// .instrument-select{
+//     width: 8vw;
+//     // border: none;
+//     padding: 0;
+// }
+
+.instrument-menu {
+    position: absolute;
+    top: 16px;
+    right: 16px;
 }
 
 .instruments {
     display: flex;
-    border-bottom: 1px solid #c7c7c7;
-    height: 70vh;
+    flex-direction: column;
+    // border-bottom: 1px solid #c7c7c7;
+    min-height: 100vh;
+    // overflow: scroll;
     width: 100%;
-    overflow: scroll;
+    margin: auto;
+    &__button-wrap {
+        text-align: left;
+        border-left: 1px solid #FF5151;
+        padding-left: 8px;
+    }
 
     &__heading {
         font-weight: normal;
         font-size: 5rem;
+        // display: inline-block;
+        width: 100%;
+        text-align: center;
         color: #c7c7c7;
-        margin: auto;
+        margin: 20% auto;
+        transform: translateY(-50%);
     }
 }
 
+.logo {
+    padding: 1rem;
+}
+
 .controls {
-    height: 30vh;
+    &__wrap {
+        // position: absolute;
+        bottom: 16px;
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        width: 10%;
+        text-align: center;
+    }
+    height: 100vh;
+    padding: 1rem;
+    display: flex;
+    z-index: 9999;
+    width: 5%;
+    overflow: scroll;
+    // color: white;
+    background-color: #3d3d3d;
+    // position:fixed;
+    // border: 1px solid #c7c7c7;
+    // left: 16px;
+    // bottom: 16px;
+    flex-direction: column;
+    align-content: space-between;
 }
 
 .main {
-    width: 88vw;
+    width: 70vw;
+    min-height: 100vh;
+    margin: auto;
+    background-color: #4d4d4d;
 }
 
+input[type=range] {
+    box-shadow: 0px 0px 10px 1px #ff4a4a;
+}
 
+.length-select {
+    width: 50%;
+    margin: auto;
+    background-color: transparent;
+    color: #c7c7c7;
+    font-family: 'Microsoft Yi Baiti';
+    font-size: 60pt;
+    border:none;
+    // border-bottom: 1px solid #ff4a4a;
+    outline: none;
+    padding-top: 50px;
+    margin-left: 50%;
+    transform: translate(-50%, 0);
+
+    &__current {
+        height:20px
+    }
+
+    &__btn {
+        border: none;
+        background-color: #ff4a4a;
+        color: white;
+        display: inline-block;
+        padding: 1rem;
+        width: 160px;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-around;
+        margin: 0;
+        align-self:flex-end;
+        align-items: flex-end;
+        height: 20px;
+
+        &-wrap {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #ff4a4a;
+            height: 90px;
+        }
+    }
+
+    &__start {
+        border: none;
+        background-color: #ff4a4a;
+        color: white;
+        padding: 1rem;
+        cursor: pointer;
+    }
+
+    &__arrow {
+        width: 20px
+    }
+
+    &__list {
+
+    }
+
+    &__option{
+        background-color: transparent;
+        cursor: pointer;
+        &:hover{
+            background-color: #626262;
+        }
+    }
+}
 
 .setup {
     &__play-button{
@@ -56,7 +173,8 @@
         border: none;
         // clip-path: circle();
         border-radius: 999999999px;
-        position: absolute;
+        // position: absolute;
+        margin: 16px 0 16px auto;
         bottom: 3%;
         right: 3%;
         outline: none;
@@ -67,4 +185,3 @@
         width: 20px;
     }
 }
-
