@@ -87,9 +87,12 @@ export default class Instrument extends Component {
                 let time = Tone.now()
                 this.state.sound.triggerAttackRelease([layer], '8n.', time) 
             } 
-        }
+        }   
+    }
 
-        
+    cleanUp(){
+        this.state.sound.dispose()
+        if(this.state.effects) this.state.effects.forEach(e => e.dispose())
     }
 
     makeTone = (tone) => {
@@ -125,7 +128,7 @@ export default class Instrument extends Component {
     render() {
         return (  
                 <div className = 'instrument'>
-                    <img src={remove} className= 'instrument__remove-btn' onClick={()=>this.props.remove(this.props.index)} /> 
+                    <img src={remove} className= 'instrument__remove-btn' onClick={()=>{this.cleanUp();this.props.remove(this.props.index)}} /> 
                     <h3 className="instrument__name">{this.props.inst.name}</h3>
                     <div className="instrument__volume-wrap">
                         <label htmlFor="volume"> volume </label>

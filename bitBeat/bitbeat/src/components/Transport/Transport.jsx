@@ -21,6 +21,8 @@ import DrumKit from '../DrumKit/DrumKit'
 import { writable } from 'tone/build/esm/core/util/Interface'
 const db = firebase.firestore()
 
+// Tone.setContext(new Tone.Context({ latencyHint : "playback" }))
+
 /* Analogous to the Rig class in index.js. */
 export const GlobalStep = React.createContext()
 
